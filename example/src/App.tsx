@@ -1,10 +1,17 @@
-import React from 'react'
+import React from 'react';
 
-import { ExampleComponent } from 'movie_widget'
-import 'movie_widget/dist/index.css'
+import { WidgetProvider, MovieWidgetComponent } from 'movie_widget';
+import 'movie_widget/dist/index.css';
 
 const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
-}
+  return (
+    <WidgetProvider theme={{}}>
+      <>
+        <h1>My website title</h1>
+        <MovieWidgetComponent />
+      </>
+    </WidgetProvider>
+  );
+};
 
-export default App
+export default App;

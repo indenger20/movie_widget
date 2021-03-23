@@ -1,0 +1,4 @@
+.widgetWrapper {
+  position: static;
+  background: var(--widget-primary);
+}
