@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import {
   WidgetProvider,
-  MovieWidgetComponent,
   IWidgetProvider,
+  MovieWidgetComponent,
 } from 'movie_widget';
 import 'movie_widget/dist/index.css';
 

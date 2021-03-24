@@ -4,7 +4,7 @@ import { getMoviesAction } from 'actions';
 import { IMovieList, resetListPaginatedModel } from 'interfaces';
 import { IWidgetProps } from 'index';
 import Search from 'components/Search';
-import _ from 'lodash';
+import debounce from 'lodash.debounce';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieCard from './components/MovieCard';
 
@@ -33,7 +33,7 @@ function MovieWidget(props: IWidgetProps) {
     init();
   }, []);
 
-  const handleSearch = _.debounce(async (query: string) => {
+  const handleSearch = debounce(async (query: string) => {
     const movieList = await getMoviesAction({ page: 1, query });
     const hasMore = movieList.total_pages > movieList.page;
     setState({ ...state, hasMore, movieList, searchQuery: query });

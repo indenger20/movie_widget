@@ -1,7 +1,6 @@
 import TextInput from 'components/TextInput';
 import React, { useState } from 'react';
 import styles from './search.module.css';
-import _ from 'lodash';
 
 interface ISearchProps {
   onChange(query: string): void;

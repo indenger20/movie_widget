@@ -1,10 +1,9 @@
-import * as React from 'react';
-import ActorsWidget from './Widgets/ActorsWidget';
-import MovieWidget from './Widgets/MovieWidget';
+import { defaultTheme } from 'const';
+import merge from 'lodash.merge';
+import React, { useEffect } from 'react';
+import ActorsWidget from 'Widgets/ActorsWidget';
+import MovieWidget from 'Widgets/MovieWidget';
 import { ITheme } from './interfaces';
-import { defaultTheme } from './const';
-import { useEffect } from 'react';
-import _ from 'lodash';
 
 export interface IWidgetProvider {
   theme?: ITheme;
@@ -20,9 +19,8 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   const { theme } = props;
 
   useEffect(() => {
-    const currentTheme = _.merge(defaultTheme, theme);
+    const currentTheme = merge(defaultTheme, theme);
     const { colors = {} } = currentTheme;
-    console.log(currentTheme);
 
     Object.keys(colors).forEach((key) => {
       document.body.style.setProperty(`--widget-${key}`, colors[key]);
