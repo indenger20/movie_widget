@@ -1,3 +1,5 @@
+import { PaginationWrapper } from 'interfaces';
+
 export interface IMovie {
   poster_path: string | null;
   adult: boolean;
@@ -14,3 +16,5 @@ export interface IMovie {
   video: boolean;
   vote_average: number;
 }
+
+export interface IMovieList extends PaginationWrapper<IMovie> {}

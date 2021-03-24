@@ -6,9 +6,14 @@ import { defaultTheme } from './const';
 import { useEffect } from 'react';
 import _ from 'lodash';
 
-interface IWidgetProvider {
+export interface IWidgetProvider {
   theme?: ITheme;
   children: React.ReactElement;
+}
+
+export interface IWidgetProps {
+  filter?: number;
+  className?: string;
 }
 
 export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
@@ -17,6 +22,8 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   useEffect(() => {
     const currentTheme = _.merge(defaultTheme, theme);
     const { colors = {} } = currentTheme;
+    console.log(currentTheme);
+
     Object.keys(colors).forEach((key) => {
       document.body.style.setProperty(`--widget-${key}`, colors[key]);
     });
@@ -29,6 +36,6 @@ export const ActorsWidgetComponent = () => {
   return <ActorsWidget />;
 };
 
-export const MovieWidgetComponent = () => {
-  return <MovieWidget />;
+export const MovieWidgetComponent = (props: IWidgetProps) => {
+  return <MovieWidget {...props} />;
 };

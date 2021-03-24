@@ -1,6 +1,6 @@
 import { MOVIE_API_PATH } from 'config/appConfig';
 import { httpApi, prepareMovieDataToUrl } from 'helpers';
-import { IMovie, QueryParams } from 'interfaces';
+import { IMovieList, QueryParams, resetListPaginatedModel } from 'interfaces';
 
 export const getMoviesAction = async (payload: QueryParams) => {
   let path = `/search/movie`;
@@ -14,7 +14,7 @@ export const getMoviesAction = async (payload: QueryParams) => {
   }
 
   try {
-    const result = await httpApi<IMovie[]>({
+    const result = await httpApi<IMovieList>({
       partUrl: `${path}?${prepareMovieDataToUrl(params)}`,
       method: 'GET',
       baseURL: MOVIE_API_PATH,
@@ -24,8 +24,8 @@ export const getMoviesAction = async (payload: QueryParams) => {
       return result.data;
     }
 
-    return [];
+    return resetListPaginatedModel();
   } catch (err) {
-    return [];
+    return resetListPaginatedModel();
   }
 };

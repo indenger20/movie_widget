@@ -5,11 +5,11 @@ export interface IPagination {
 }
 
 export interface PaginationWrapper<T = any> extends IPagination {
-  result: T[];
+  results: T[];
 }
 
 export const resetListPaginatedModel = (): PaginationWrapper => ({
-  result: [],
+  results: [],
   page: 1,
   total_pages: 1,
   total_results: 1,
