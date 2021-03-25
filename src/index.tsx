@@ -4,13 +4,14 @@ import React, { useEffect } from 'react';
 import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
 import { ITheme } from './interfaces';
+import { WidgetType, withWidget } from 'containers';
 
 export interface IWidgetProvider {
   theme?: ITheme;
   children: React.ReactElement;
 }
 
-export interface IWidgetProps {
+export interface IWidgetWrapperProps {
   filter?: number;
   className?: string;
 }
@@ -30,10 +31,10 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   return props.children;
 };
 
-export const PeopleWidgetComponent = (props: IWidgetProps) => {
+export const PeopleWidgetComponent = (props: IWidgetWrapperProps) => {
   return <PeopleWidget {...props} />;
 };
 
-export const MovieWidgetComponent = (props: IWidgetProps) => {
+export const MovieWidgetComponent = (props: IWidgetWrapperProps) => {
   return <MovieWidget {...props} />;
 };
