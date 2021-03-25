@@ -25,6 +25,17 @@ code {
 .btn {
 }
 
+.widget-box {
+  display: flex;
+  margin: 20px -15px 0;
+}
+
 .movie-widget {
-  margin-top: 20px;
+  width: 50%;
+  margin: 0 15px;
+}
+
+.actors-widget {
+  width: 50%;
+  margin: 0 15px;
 }

@@ -15,13 +15,13 @@
 }
 
 .widgetList {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -15px;
 }
 
 .widgetList > div {
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
 }
 
 .widgetListScroll {
@@ -29,20 +29,20 @@
   flex-wrap: wrap;
 }
 
-.movieCard {
+.widgetCard {
   padding: 0 15px 15px;
   width: 33.33%;
   box-sizing: border-box;
 }
 
-.movieCardWrapper {
+.widgetCardWrapper {
   height: 100%;
   background: transparent;
   position: relative;
   cursor: pointer;
 }
 
-.movieCardWrapper:before {
+.widgetCardWrapper:before {
   content: '';
   position: absolute;
   top: 0;
@@ -55,19 +55,19 @@
   z-index: 1;
 }
 
-.movieCardWrapper:hover:before {
+.widgetCardWrapper:hover:before {
   transition: opacity 0.3s;
   opacity: 0.6;
 }
-.movieCardWrapper:hover .movieCardTitle {
+.widgetCardWrapper:hover .widgetCardTitle {
   opacity: 1;
 }
-.movieCardWrapper:hover .movieCardRating {
+.widgetCardWrapper:hover .widgetCardRating {
   opacity: 1;
   top: 40%;
 }
 
-.movieCardTitle {
+.widgetCardTitle {
   position: absolute;
   font-size: 18px;
   font-weight: 700;
@@ -82,8 +82,8 @@
   z-index: 2;
 }
 
-.movieCardPoster,
-.movieCardPosterEmpty {
+.widgetCardPoster,
+.widgetCardPosterEmpty {
   display: block;
   width: 100%;
   height: 100%;
@@ -91,19 +91,19 @@
   min-height: 250px;
 }
 
-.movieCardPosterEmpty {
+.widgetCardPosterEmpty {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.movieCardPosterEmpty img {
+.widgetCardPosterEmpty img {
   width: 80px;
   height: auto;
   display: block;
 }
 
-.movieCardRating {
+.widgetCardRating {
   position: absolute;
   top: 30%;
   left: 0;
@@ -116,7 +116,7 @@
   z-index: 2;
 }
 
-.movieCardRatingTitle {
+.widgetCardRatingTitle {
   display: block;
   font-size: 16px;
   color: #fff;
@@ -124,7 +124,7 @@
   padding-bottom: 5px;
 }
 
-.movieCardRatingProgress {
+.widgetCardRatingProgress {
   height: 30px;
   width: 100%;
   display: block;
@@ -135,13 +135,13 @@
   border-radius: 3px;
 }
 
-.movieCardRatingProgressBar {
+.widgetCardRatingProgressBar {
   background: var(--widget-success);
   height: 100%;
   border-radius: 3px;
 }
 
-.movieCardRatingText {
+.widgetCardRatingText {
   position: absolute;
   font-size: 14px;
   color: #fff;

@@ -1,7 +1,7 @@
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import React, { useEffect } from 'react';
-import ActorsWidget from 'Widgets/ActorsWidget';
+import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
 import { ITheme } from './interfaces';
 
@@ -30,8 +30,8 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   return props.children;
 };
 
-export const ActorsWidgetComponent = () => {
-  return <ActorsWidget />;
+export const PeopleWidgetComponent = (props: IWidgetProps) => {
+  return <PeopleWidget {...props} />;
 };
 
 export const MovieWidgetComponent = (props: IWidgetProps) => {
