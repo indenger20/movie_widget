@@ -13,19 +13,21 @@ function MovieCard(props: IMovieCardProps) {
   const {
     movie: { title, poster_path, vote_average },
   } = props;
+  const ratingPersent = vote_average * 10;
   return (
     <div className={styles.movieCard}>
       <div className={styles.movieCardWrapper}>
         <span className={styles.movieCardTitle}>{title}</span>
-        {/* <div className={styles.movieCardRating}>
+        <div className={styles.movieCardRating}>
           <span className={styles.movieCardRatingTitle}>Rating</span>
           <div className={styles.movieCardRatingProgress}>
+            <span className={styles.movieCardRatingText}>{vote_average}</span>
             <div
               className={styles.movieCardRatingProgressBar}
-              style={{ width: `${vote_average * 10}%` }}
+              style={{ width: `${ratingPersent}%` }}
             />
           </div>
-        </div> */}
+        </div>
         {poster_path ? (
           <img
             src={`${path}/w500${poster_path}`}
