@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useImmer } from 'use-immer';
+import clsx from 'clsx';
 import styles from '../../widget.module.css';
 import { getMoviesAction } from 'actions';
-import { IMovieList, resetListPaginatedModel } from 'interfaces';
+import { IMovieList } from 'interfaces';
 import { IWidgetProps } from 'index';
 import Search from 'components/Search';
 import debounce from 'lodash.debounce';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieCard from './components/MovieCard';
+import {
+  DEFAULT_PAGE,
+  resetListPaginatedModel,
+  SEARCH_DELAY_TIMER,
+} from 'const';
 
 interface IWidgetState {
   movieList: IMovieList;
@@ -21,60 +28,67 @@ const initialState: IWidgetState = {
 };
 
 function MovieWidget(props: IWidgetProps) {
-  const { filter, className = '' } = props;
-  const [state, setState] = useState(initialState);
+  const { filter, className } = props;
+  const [state, setState] = useImmer(initialState);
 
-  useEffect(() => {
-    const init = async () => {
-      const movieList = await getMoviesAction({ page: 1 });
-      const hasMore = movieList.total_pages > movieList.page;
-      setState({ ...state, hasMore, movieList: movieList });
-    };
-    init();
-  }, []);
+  const {
+    movieList: { page, total_pages, results },
+    searchQuery,
+    hasMore,
+  } = state;
 
-  const handleSearch = debounce(async (query: string) => {
-    const movieList = await getMoviesAction({ page: 1, query });
+  const loadMovies = async ({
+    page,
+    query,
+    isConcat,
+  }: {
+    page: number;
+    query?: string;
+    isConcat?: boolean;
+  }) => {
+    const newQuery = query !== undefined ? query : searchQuery;
+    const movieList = await getMoviesAction({ page, query: newQuery });
     const hasMore = movieList.total_pages > movieList.page;
-    setState({ ...state, hasMore, movieList, searchQuery: query });
-  }, 500);
-
-  const fetchMoreData = async () => {
-    const {
-      searchQuery,
-      movieList: { page, total_pages },
-    } = state;
-    const newPage = page + 1;
-    if (newPage <= total_pages) {
-      const movieList = await getMoviesAction({
-        page: newPage,
-        query: searchQuery,
-      });
-      const hasMore = movieList.total_pages > movieList.page;
-      const updatedList = {
+    let updatedList = movieList;
+    if (isConcat) {
+      updatedList = {
         ...movieList,
         results: [...state.movieList.results, ...movieList.results],
       };
-      setState({ ...state, hasMore, movieList: updatedList });
-    } else {
-      setState({ ...state, hasMore: false });
     }
+    setState((draft) => {
+      draft.hasMore = hasMore;
+      draft.searchQuery;
+      draft.movieList = updatedList;
+    });
   };
 
-  const {
-    hasMore,
-    movieList: { results },
-  } = state;
+  useEffect(() => {
+    loadMovies({ page: DEFAULT_PAGE });
+  }, []);
+
+  const handleSearch = debounce(async (query: string) => {
+    loadMovies({ page: DEFAULT_PAGE, query });
+  }, SEARCH_DELAY_TIMER);
+
+  const loadMoreData = async () => {
+    const newPage = page + 1;
+    if (newPage > total_pages) {
+      setState({ ...state, hasMore: false });
+      return;
+    }
+    loadMovies({ page: newPage, isConcat: true });
+  };
 
   return (
-    <div className={`${styles.widgetWrapper} ${className}`}>
+    <div className={clsx(styles.widgetWrapper, className)}>
       <span className={styles.widgetTitle}>Search Movies</span>
       <Search onChange={handleSearch} />
       <div className={styles.widgetList}>
         <InfiniteScroll
           className={styles.widgetListScroll}
           dataLength={results.length}
-          next={fetchMoreData}
+          next={loadMoreData}
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
         >

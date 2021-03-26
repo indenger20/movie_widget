@@ -1,4 +1,4 @@
-import { PaginationWrapper } from 'interfaces';
+import { LanguageTypes, PaginationWrapper } from 'interfaces';
 
 export interface IMovie {
   poster_path: string | null;
@@ -8,7 +8,7 @@ export interface IMovie {
   genre_ids: number[];
   id: number;
   original_title: string;
-  original_language: string;
+  original_language: LanguageTypes;
   title: string;
   backdrop_path: string | null;
   popularity: number;
