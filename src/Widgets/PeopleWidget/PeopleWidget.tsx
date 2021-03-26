@@ -1,41 +1,24 @@
 import React from 'react';
-import styles from '../../widget.module.css';
-import Search from 'components/Search';
-import { IPeopleList } from 'interfaces';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import PeopleCard from '../components/PeopleCard';
-import { IWidgetProps, WidgetType, withWidget } from 'containers';
+import { IPeopleList, WidgetTypes } from 'interfaces';
+import { IWidgetProps, withWidget } from 'containers';
+import Card from 'components/Card';
 
 function PeopleWidget(props: IWidgetProps<IPeopleList>) {
   const {
-    hasMore,
-    isLoading,
     list: { results },
-    onSearch,
-    fetchMoreData,
-    className,
   } = props;
 
-  return (
-    <div className={`${styles.widgetWrapper} ${className}`}>
-      <span className={styles.widgetTitle}>Search Peoples</span>
-      <Search onChange={onSearch} />
-      <div className={styles.widgetList}>
-        <InfiniteScroll
-          height={500}
-          className={styles.widgetListScroll}
-          dataLength={results.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-        >
-          {results.map((card) => (
-            <PeopleCard key={card.id} people={card} />
-          ))}
-        </InfiniteScroll>
-      </div>
-    </div>
-  );
+  return results.map(({ name, popularity, id, profile_path }) => {
+    return (
+      <Card
+        key={id}
+        imagePath={profile_path}
+        ratingPersent={popularity}
+        voteAvarage={popularity}
+        title={name}
+      />
+    );
+  });
 }
 
-export default withWidget(WidgetType.PEOPLE, PeopleWidget);
+export default withWidget(WidgetTypes.PEOPLE, PeopleWidget);

@@ -1,18 +1,26 @@
 import TextInput from 'components/TextInput';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import styles from './search.module.css';
+import { useImmer } from 'use-immer';
+import { usePrevious } from 'hooks';
 
 interface ISearchProps {
   onChange(query: string): void;
 }
 
 function Search(props: ISearchProps) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useImmer('');
   const { onChange } = props;
+  const prevQuery = usePrevious(query);
+
+  useEffect(() => {
+    if (prevQuery !== query) {
+      onChange(query);
+    }
+  }, [query]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    onChange(event.target.value);
   };
 
   return (

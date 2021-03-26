@@ -67,5 +67,10 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "clsx": "^1.1.1",
+    "react-toastify": "^7.0.3",
+    "use-immer": "^0.5.1"
+  }
 }

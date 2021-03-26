@@ -1,2 +1,1 @@
-export * from './MovieActions';
-export * from './PeopleActions';
+export * from './WidgetActions';
