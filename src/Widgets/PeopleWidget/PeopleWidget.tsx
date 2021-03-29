@@ -1,9 +1,9 @@
 import React from 'react';
 import { IPeopleList, WidgetTypes } from 'interfaces';
-import { IWidgetProps, withWidget } from 'containers';
+import { IListWidgetProps, withListWidget } from 'containers';
 import Card from 'components/Card';
 
-function PeopleWidget(props: IWidgetProps<IPeopleList>) {
+function PeopleWidget(props: IListWidgetProps<IPeopleList>) {
   const {
     list: { results },
   } = props;
@@ -21,4 +21,4 @@ function PeopleWidget(props: IWidgetProps<IPeopleList>) {
   });
 }
 
-export default withWidget(WidgetTypes.PEOPLE, PeopleWidget);
+export default withListWidget(WidgetTypes.PEOPLE, PeopleWidget);

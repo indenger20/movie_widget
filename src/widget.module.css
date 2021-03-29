@@ -3,11 +3,12 @@
   background: var(--widget-dark);
   border-radius: 6px;
   box-shadow: 1px 1px 10px -5px rgb(0 0 0 / 80%);
+  font-size: 16px;
 }
 
 .widgetTitle {
   color: #fff;
-  font-size: 18px;
+  font-size: 1.2em;
   display: block;
   text-align: center;
   font-weight: 700;
@@ -70,7 +71,7 @@
 
 .widgetCardTitle {
   position: absolute;
-  font-size: 18px;
+  font-size: 1.2em;
   font-weight: 700;
   color: var(--widget-success);
   bottom: 0;
@@ -119,7 +120,7 @@
 
 .widgetCardRatingTitle {
   display: block;
-  font-size: 16px;
+  font-size: 1em;
   color: #fff;
   font-weight: 700;
   padding-bottom: 5px;
@@ -144,7 +145,7 @@
 
 .widgetCardRatingText {
   position: absolute;
-  font-size: 14px;
+  font-size: 0.75em;
   color: #fff;
   font-weight: 700;
   top: 0;

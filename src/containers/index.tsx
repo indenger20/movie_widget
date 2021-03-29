@@ -1,1 +1,1 @@
-export * from './withWidget';
+export * from './withListWidget';

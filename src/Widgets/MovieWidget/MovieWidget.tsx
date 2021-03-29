@@ -1,9 +1,10 @@
 import React from 'react';
 import { IMovieList, WidgetTypes } from 'interfaces';
-import { IWidgetProps, withWidget } from 'containers';
+import { IListWidgetProps, withListWidget } from 'containers';
 import Card from 'components/Card';
+import { getPersentage } from 'helpers';
 
-function MovieWidget(props: IWidgetProps<IMovieList>) {
+function MovieWidget(props: IListWidgetProps<IMovieList>) {
   const {
     list: { results },
   } = props;
@@ -13,7 +14,7 @@ function MovieWidget(props: IWidgetProps<IMovieList>) {
       <Card
         key={id}
         imagePath={backdrop_path}
-        ratingPersent={vote_average * 10}
+        ratingPersent={getPersentage(vote_average)}
         voteAvarage={vote_average}
         title={title}
       />
@@ -21,4 +22,4 @@ function MovieWidget(props: IWidgetProps<IMovieList>) {
   });
 }
 
-export default withWidget(WidgetTypes.MOVIE, MovieWidget);
+export default withListWidget(WidgetTypes.MOVIE, MovieWidget);

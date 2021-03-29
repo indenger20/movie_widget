@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../widget.module.css';
 import { getImagePath } from 'helpers';
-import EmptyImage from 'components/EmptyImage';
+import ImagePlaceholder from 'components/ImagePlaceholder';
 
 interface ICardProps {
   title: string;
@@ -33,7 +33,7 @@ function Card(props: ICardProps) {
             alt={title}
           />
         ) : (
-          <EmptyImage />
+          <ImagePlaceholder />
         )}
       </div>
     </div>

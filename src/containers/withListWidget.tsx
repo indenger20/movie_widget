@@ -16,24 +16,26 @@ import debounce from 'lodash.debounce';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useImmer } from 'use-immer';
 
-export interface IWidgetProps<T> {
+export interface IListWidgetProps<T> {
   list: T;
 }
 
-interface IWidgetState<T> {
+interface IListWidgetState<T> {
   list: T;
   searchQuery: string;
   hasMore: boolean;
 }
 
-const initialState: IWidgetState<IMovieList | IPeopleList> = {
+const initialState: IListWidgetState<IMovieList | IPeopleList> = {
   list: listWithPaginationInitialState(),
   searchQuery: '',
   hasMore: false,
 };
 
-export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
-  const Wrapper: React.FC<any> = (props: IWidgetWrapperProps) => {
+export const withListWidget = (type: WidgetTypes, ChildComponent: any) => {
+  const Wrapper: React.FC<IWidgetWrapperProps> = (
+    props: IWidgetWrapperProps,
+  ) => {
     const [state, setState] = useImmer(initialState);
 
     const {
@@ -43,7 +45,7 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
       hasMore,
     } = state;
 
-    const loadMovies = async ({
+    const loadList = async ({
       page,
       query,
     }: {
@@ -51,16 +53,16 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
       query?: string;
     }) => {
       const newQuery = query !== undefined ? query : searchQuery;
-      const movieList = await getWidgetListActions<IMovieList | IPeopleList>({
+      const dataList = await getWidgetListActions<IMovieList | IPeopleList>({
         type,
         params: { page, query: newQuery },
       });
-      const hasMore = movieList.total_pages > movieList.page;
-      let updatedList = movieList;
+      const hasMore = dataList.total_pages > dataList.page;
+      let updatedList = dataList;
       if (updatedList.page > DEFAULT_PAGE) {
         updatedList = {
-          ...movieList,
-          results: [...state.list.results, ...movieList.results],
+          ...dataList,
+          results: [...state.list.results, ...dataList.results],
         };
       }
       setState((draft) => {
@@ -71,11 +73,11 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
     };
 
     useEffect(() => {
-      loadMovies({ page: DEFAULT_PAGE });
+      loadList({ page: DEFAULT_PAGE });
     }, []);
 
     const handleSearch = debounce(async (query: string) => {
-      loadMovies({ page: DEFAULT_PAGE, query });
+      loadList({ page: DEFAULT_PAGE, query });
     }, SEARCH_DELAY_TIMER);
 
     const loadMoreData = async () => {
@@ -84,10 +86,10 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
         setState({ ...state, hasMore: false });
         return;
       }
-      loadMovies({ page: newPage });
+      loadList({ page: newPage });
     };
 
-    const params: IWidgetProps<IMovieList | IPeopleList> = {
+    const params: IListWidgetProps<IMovieList | IPeopleList> = {
       list,
     };
 

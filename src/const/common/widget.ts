@@ -1,6 +1,6 @@
 import { WidgetTypes } from 'interfaces';
 
-export const widgetPaths = {
+export const widgetListPaths = {
   [WidgetTypes.MOVIE]: {
     true: '/search/movie',
     false: '/movie/popular',

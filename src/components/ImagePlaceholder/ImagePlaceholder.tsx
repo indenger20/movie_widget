@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../widget.module.css';
 
-function EmptyImage() {
+function ImagePlaceholder() {
   return (
     <div className={styles.widgetCardPosterEmpty}>
       <img src='https://www.flaticon.com/premium-icon/icons/svg/3875/3875433.svg' />
@@ -9,4 +9,4 @@ function EmptyImage() {
   );
 }
 
-export default EmptyImage;
+export default ImagePlaceholder;

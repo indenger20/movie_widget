@@ -8,6 +8,8 @@ import {
 } from 'movie_widget';
 import 'movie_widget/dist/index.css';
 
+import './index.css';
+
 const lightTheme: IWidgetProvider['theme'] = {
   colors: { primary: 'green', dark: '#eee' },
 };
