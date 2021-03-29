@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { MOVIE_API_KEY, MOVIE_API_PATH } from 'config/appConfig';
+import { MOVIE_API_KEY } from 'config/appConfig';
 
-export function httpApi() {
+export function httpApi(baseURL: string) {
   const instance = axios.create({
-    baseURL: MOVIE_API_PATH,
+    baseURL,
   });
   instance.interceptors.request.use((config) => {
     config.params['api_key'] = MOVIE_API_KEY;

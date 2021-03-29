@@ -3,11 +3,12 @@
   background: var(--widget-dark);
   border-radius: 6px;
   box-shadow: 1px 1px 10px -5px rgb(0 0 0 / 80%);
+  font-size: 16px;
 }
 
 .widgetTitle {
   color: #fff;
-  font-size: 18px;
+  font-size: 1.2em;
   display: block;
   text-align: center;
   font-weight: 700;
@@ -15,34 +16,35 @@
 }
 
 .widgetList {
+}
+
+.widgetList > div {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   margin: 0 -15px;
 }
 
-.widgetList > div {
-  width: 100%;
-}
-
 .widgetListScroll {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 
-.movieCard {
+.widgetCard {
   padding: 0 15px 15px;
   width: 33.33%;
   box-sizing: border-box;
 }
 
-.movieCardWrapper {
+.widgetCardWrapper {
   height: 100%;
   background: transparent;
   position: relative;
   cursor: pointer;
 }
 
-.movieCardWrapper:before {
+.widgetCardWrapper:before {
   content: '';
   position: absolute;
   top: 0;
@@ -55,17 +57,21 @@
   z-index: 1;
 }
 
-.movieCardWrapper:hover:before {
+.widgetCardWrapper:hover:before {
   transition: opacity 0.3s;
   opacity: 0.6;
 }
-.movieCardWrapper:hover .movieCardTitle {
+.widgetCardWrapper:hover .widgetCardTitle {
   opacity: 1;
 }
+.widgetCardWrapper:hover .widgetCardRating {
+  opacity: 1;
+  top: 40%;
+}
 
-.movieCardTitle {
+.widgetCardTitle {
   position: absolute;
-  font-size: 18px;
+  font-size: 1.2em;
   font-weight: 700;
   color: var(--widget-success);
   bottom: 0;
@@ -78,8 +84,8 @@
   z-index: 2;
 }
 
-.movieCardPoster,
-.movieCardPosterEmpty {
+.widgetCardPoster,
+.widgetCardPosterEmpty {
   display: block;
   width: 100%;
   height: 100%;
@@ -87,28 +93,67 @@
   min-height: 250px;
 }
 
-.movieCardPosterEmpty {
+.widgetCardPosterEmpty {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.movieCardPosterEmpty img {
+.widgetCardPosterEmpty img {
   width: 80px;
   height: auto;
   display: block;
 }
 
-.movieCardRating {
+.widgetCardRating {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 2;
 }
 
-.movieCardRatingTitle {
+.widgetCardRatingTitle {
   display: block;
-  font-size: 16px;
+  font-size: 1em;
+  color: #fff;
+  font-weight: 700;
+  padding-bottom: 5px;
 }
 
-.movieCardRatingProgress {
+.widgetCardRatingProgress {
+  height: 30px;
+  width: 100%;
+  display: block;
+  background: var(--widget-dark);
+  position: relative;
+  padding: 2px 0;
+  box-sizing: border-box;
+  border-radius: 3px;
 }
 
-.movieCardRatingProgressBar {
+.widgetCardRatingProgressBar {
+  background: var(--widget-success);
+  height: 100%;
+  border-radius: 3px;
+}
+
+.widgetCardRatingText {
+  position: absolute;
+  font-size: 0.75em;
+  color: #fff;
+  font-weight: 700;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

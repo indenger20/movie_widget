@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
+import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
 import { ITheme } from './interfaces';
 
@@ -12,7 +13,7 @@ export interface IWidgetProvider {
   children: React.ReactElement;
 }
 
-export interface IWidgetProps {
+export interface IWidgetWrapperProps {
   filter?: number;
   className?: string;
 }
@@ -40,6 +41,10 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   );
 };
 
-export const MovieWidgetComponent = (props: IWidgetProps) => {
+export const PeopleWidgetComponent = (props: IWidgetWrapperProps) => {
+  return <PeopleWidget {...props} />;
+};
+
+export const MovieWidgetComponent = (props: IWidgetWrapperProps) => {
   return <MovieWidget {...props} />;
 };

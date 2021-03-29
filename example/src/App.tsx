@@ -4,8 +4,11 @@ import {
   WidgetProvider,
   IWidgetProvider,
   MovieWidgetComponent,
+  PeopleWidgetComponent,
 } from 'movie_widget';
 import 'movie_widget/dist/index.css';
+
+import './index.css';
 
 const lightTheme: IWidgetProvider['theme'] = {
   colors: { primary: 'green', dark: '#eee' },
@@ -38,7 +41,10 @@ const App = () => {
         <button onClick={handleChange} className='btn'>
           Change Theme
         </button>
-        <MovieWidgetComponent className='movie-widget' />
+        <div className='widget-box'>
+          <MovieWidgetComponent className='movie-widget' />
+          <PeopleWidgetComponent className='actors-widget' />
+        </div>
       </div>
     </WidgetProvider>
   );

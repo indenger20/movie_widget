@@ -9,3 +9,8 @@ export interface IPagination {
 export interface PaginationWrapper<T = any> extends IPagination {
   results: T[];
 }
+
+export enum WidgetTypes {
+  MOVIE,
+  PEOPLE,
+}
