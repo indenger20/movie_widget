@@ -1,5 +1,5 @@
 import { MOVIE_API_PATH } from 'config/appConfig';
-import { resetListPaginatedModel, widgetPaths } from 'const';
+import { listWithPaginationInitialState, widgetPaths } from 'const';
 import { httpApi } from 'helpers';
 import { QueryParams, WidgetTypes } from 'interfaces';
 
@@ -21,6 +21,6 @@ export const getWidgetListActions = async <T = any>(payload: {
 
     return result.data;
   } catch (err) {
-    return resetListPaginatedModel();
+    return listWithPaginationInitialState();
   }
 };

@@ -5,7 +5,7 @@ import styles from '../widget.module.css';
 import Search from 'components/Search';
 import {
   DEFAULT_PAGE,
-  resetListPaginatedModel,
+  listWithPaginationInitialState,
   SEARCH_DELAY_TIMER,
   widgetTitles,
 } from 'const';
@@ -27,7 +27,7 @@ interface IWidgetState<T> {
 }
 
 const initialState: IWidgetState<IMovieList | IPeopleList> = {
-  list: resetListPaginatedModel(),
+  list: listWithPaginationInitialState(),
   searchQuery: '',
   hasMore: false,
 };
@@ -46,11 +46,9 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
     const loadMovies = async ({
       page,
       query,
-      isConcat,
     }: {
       page: number;
       query?: string;
-      isConcat?: boolean;
     }) => {
       const newQuery = query !== undefined ? query : searchQuery;
       const movieList = await getWidgetListActions<IMovieList | IPeopleList>({
@@ -59,7 +57,7 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
       });
       const hasMore = movieList.total_pages > movieList.page;
       let updatedList = movieList;
-      if (isConcat) {
+      if (updatedList.page > DEFAULT_PAGE) {
         updatedList = {
           ...movieList,
           results: [...state.list.results, ...movieList.results],
@@ -86,7 +84,7 @@ export const withWidget = (type: WidgetTypes, ChildComponent: any) => {
         setState({ ...state, hasMore: false });
         return;
       }
-      loadMovies({ page: newPage, isConcat: true });
+      loadMovies({ page: newPage });
     };
 
     const params: IWidgetProps<IMovieList | IPeopleList> = {
