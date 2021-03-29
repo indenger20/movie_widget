@@ -11,7 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieCard from './components/MovieCard';
 import {
   DEFAULT_PAGE,
-  resetListPaginatedModel,
+  listWithPaginationInitialState,
   SEARCH_DELAY_TIMER,
 } from 'const';
 
@@ -22,7 +22,7 @@ interface IWidgetState {
 }
 
 const initialState: IWidgetState = {
-  movieList: resetListPaginatedModel(),
+  movieList: listWithPaginationInitialState(),
   searchQuery: '',
   hasMore: false,
 };
@@ -40,17 +40,15 @@ function MovieWidget(props: IWidgetProps) {
   const loadMovies = async ({
     page,
     query,
-    isConcat,
   }: {
     page: number;
     query?: string;
-    isConcat?: boolean;
   }) => {
     const newQuery = query !== undefined ? query : searchQuery;
     const movieList = await getMoviesAction({ page, query: newQuery });
     const hasMore = movieList.total_pages > movieList.page;
     let updatedList = movieList;
-    if (isConcat) {
+    if (movieList.page > 1) {
       updatedList = {
         ...movieList,
         results: [...state.movieList.results, ...movieList.results],
@@ -77,7 +75,7 @@ function MovieWidget(props: IWidgetProps) {
       setState({ ...state, hasMore: false });
       return;
     }
-    loadMovies({ page: newPage, isConcat: true });
+    loadMovies({ page: newPage });
   };
 
   return (

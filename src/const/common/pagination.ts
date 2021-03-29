@@ -1,7 +1,7 @@
 import { DEFAULT_PAGE } from 'const';
 import { PaginationWrapper } from 'interfaces';
 
-export const resetListPaginatedModel = (): PaginationWrapper => ({
+export const listWithPaginationInitialState = (): PaginationWrapper => ({
   results: [],
   page: DEFAULT_PAGE,
   total_pages: 1,

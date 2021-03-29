@@ -1,4 +1,4 @@
-import { resetListPaginatedModel } from 'const';
+import { listWithPaginationInitialState } from 'const';
 import { httpApi } from 'helpers';
 import { QueryParams } from 'interfaces';
 
@@ -12,6 +12,6 @@ export const getMoviesAction = async (payload: QueryParams) => {
 
     return result.data;
   } catch (err) {
-    return resetListPaginatedModel();
+    return listWithPaginationInitialState();
   }
 };
