@@ -6,6 +6,8 @@ import {
   MovieWidgetComponent,
   PeopleWidgetComponent,
   Languages,
+  Movie,
+  People,
 } from 'movie_widget';
 import 'movie_widget/dist/index.css';
 
@@ -34,6 +36,8 @@ const options: Languages[] = ['ru', 'en'];
 const App = () => {
   const [theme, setTheme] = useState<keyof ITheme>('light');
   const [language, setLanguage] = useState<Languages>('en');
+  const [selectedMovie, selectMovie] = useState<Movie | null>(null);
+  const [selectedPeople, selectPeople] = useState<People | null>(null);
 
   const handleChange = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
@@ -62,8 +66,16 @@ const App = () => {
         </div>
 
         <div className='widget-box'>
-          <MovieWidgetComponent className='movie-widget' />
-          <PeopleWidgetComponent className='actors-widget' />
+          <MovieWidgetComponent
+            className='movie-widget'
+            onClick={selectMovie}
+            filter={selectedPeople}
+          />
+          <PeopleWidgetComponent
+            className='actors-widget'
+            filter={selectedMovie}
+            onClick={selectPeople}
+          />
         </div>
       </div>
     </WidgetProvider>

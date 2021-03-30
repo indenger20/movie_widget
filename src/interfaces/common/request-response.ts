@@ -14,4 +14,5 @@ export interface IListState<T> {
   list: T;
   searchQuery: string;
   hasMore: boolean;
+  selectedId: number | null;
 }

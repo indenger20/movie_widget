@@ -1,6 +1,8 @@
 {
   "movieTitle": "Поиск Фильмов",
+  "movieTitleWithFilter": "Поиск Фильмов с участием: {{title}}",
   "peopleTitle": "Поиск Людей",
+  "peopleTitleWithFilter": "Поиск Людей по фильму: {{title}}",
   "searchPlaceholder": "Введите поисковый запрос",
   "loading": "Загрузка...",
   "list": {

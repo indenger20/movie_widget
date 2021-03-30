@@ -1,6 +1,8 @@
 {
   "movieTitle": "Search Movies",
+  "movieTitleWithFilter": "Search Movies by people: {{title}}",
   "peopleTitle": "Search Peoples",
+  "peopleTitleWithFilter": "Search Peoples by movie: {{title}}",
   "searchPlaceholder": "Enter search query",
   "loading": "loading...",
   "list": {

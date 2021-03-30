@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
-import { ITheme, LanguageTypes } from './interfaces';
+import { IMovie, IPeople, ITheme, LanguageTypes } from './interfaces';
 import { ConfigContext } from 'context';
 import { useConfig } from 'hooks';
 
@@ -13,6 +13,8 @@ import './i18n/config';
 import 'react-toastify/dist/ReactToastify.css';
 
 export type Languages = LanguageTypes;
+export type Movie = IMovie;
+export type People = IPeople;
 
 export interface IWidgetProvider {
   theme?: ITheme;
@@ -20,8 +22,9 @@ export interface IWidgetProvider {
   children: React.ReactElement;
 }
 
-export interface IWidgetWrapperProps {
-  filter?: string;
+export interface IListWrapperProps<T, V> {
+  filter?: T | null;
+  onClick?(filter: V | null): void;
   className?: string;
 }
 
@@ -52,10 +55,14 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   );
 };
 
-export const PeopleWidgetComponent = (props: IWidgetWrapperProps) => {
+export const PeopleWidgetComponent = (
+  props: IListWrapperProps<IMovie, IPeople>,
+) => {
   return <PeopleWidget {...props} />;
 };
 
-export const MovieWidgetComponent = (props: IWidgetWrapperProps) => {
+export const MovieWidgetComponent = (
+  props: IListWrapperProps<IPeople, IMovie>,
+) => {
   return <MovieWidget {...props} />;
 };

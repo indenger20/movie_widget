@@ -7,13 +7,13 @@ import { useTranslation } from 'react-i18next';
 import { LanguageTypes } from 'interfaces';
 
 interface ISearchProps {
-  language: LanguageTypes;
+  disabled?: boolean;
   onChange(query: string): void;
 }
 
 function Search(props: ISearchProps) {
   const [query, setQuery] = useImmer('');
-  const { onChange, language } = props;
+  const { onChange, disabled } = props;
   const prevQuery = usePrevious(query);
   const { t } = useTranslation();
 
@@ -25,7 +25,7 @@ function Search(props: ISearchProps) {
 
   useEffect(() => {
     setQuery('');
-  }, [language]);
+  }, [onChange]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -34,6 +34,7 @@ function Search(props: ISearchProps) {
   return (
     <form className={styles.search}>
       <TextInput
+        disabled={disabled}
         name='search'
         onChange={handleChange}
         value={query}

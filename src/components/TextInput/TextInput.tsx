@@ -6,14 +6,23 @@ interface ITextInputProps {
   value: string;
   type?: 'text' | 'number';
   placeholder?: string;
+  disabled?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 function TextInput(props: ITextInputProps) {
-  const { type = 'text', name, onChange, value, placeholder = '' } = props;
+  const {
+    type = 'text',
+    name,
+    onChange,
+    value,
+    placeholder = '',
+    disabled,
+  } = props;
   return (
     <div className={styles.textWrapper}>
       <input
+        disabled={disabled}
         placeholder={placeholder}
         value={value}
         name={name}

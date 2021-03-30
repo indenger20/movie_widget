@@ -3,19 +3,29 @@ import styles from '../../widget.module.css';
 import { getImagePath } from 'helpers';
 import ImagePlaceholder from 'components/ImagePlaceholder';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 interface IInfographicCardProps {
   title: string;
   ratingPersent: number;
   imagePath: string | null;
+  id: number;
+  selectedId: number | null;
+  onClick(): void;
 }
 
 function InfographicCard(props: IInfographicCardProps) {
-  const { imagePath, ratingPersent, title } = props;
+  const { imagePath, ratingPersent, title, onClick, selectedId, id } = props;
   const { t } = useTranslation();
+  const isActive = id === selectedId;
   return (
-    <div className={styles.widgetCard}>
-      <div className={styles.widgetCardWrapper}>
+    <div className={clsx(styles.widgetCard)} onClick={onClick}>
+      <div
+        className={clsx(
+          styles.widgetCardWrapper,
+          isActive && styles.widgetCardActive,
+        )}
+      >
         <span className={styles.widgetCardTitle}>{title}</span>
         <div className={styles.widgetCardRating}>
           <span className={styles.widgetCardRatingTitle}>

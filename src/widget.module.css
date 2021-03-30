@@ -7,7 +7,7 @@
 }
 
 .widgetTitle {
-  color: #fff;
+  color: var(--widget-secondary);
   font-size: 1.2em;
   display: block;
   text-align: center;
@@ -33,7 +33,7 @@
 }
 
 .widgetCard {
-  padding: 0 15px 15px;
+  padding: 15px;
   width: 33.33%;
   box-sizing: border-box;
 }
@@ -43,6 +43,15 @@
   background: transparent;
   position: relative;
   cursor: pointer;
+  transition: all 0.3s;
+  border: 4px solid transparent;
+  border-radius: 6px;
+}
+
+.widgetCardActive {
+  transition: all 0.3s;
+  border-color: var(--widget-success);
+  box-shadow: 1px 1px 10px 4px rgb(0 0 0 / 80%);
 }
 
 .widgetCardWrapper:before {
