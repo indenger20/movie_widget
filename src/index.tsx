@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { ToastContainer } from 'react-toastify';
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
@@ -9,8 +8,6 @@ import { ConfigContext } from 'context';
 import { useConfig } from 'hooks';
 
 import './i18n/config';
-
-import 'react-toastify/dist/ReactToastify.css';
 
 export type Languages = LanguageTypes;
 export type Movie = IMovie;
@@ -47,10 +44,7 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
 
   return (
     <ConfigContext.Provider value={{ config, setLanguage }}>
-      <div ref={ref}>
-        {props.children}
-        <ToastContainer />
-      </div>
+      <div ref={ref}>{props.children}</div>
     </ConfigContext.Provider>
   );
 };

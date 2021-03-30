@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { MOVIE_API_KEY } from 'config/appConfig';
 
 export function httpApi(baseURL: string) {
@@ -12,7 +11,8 @@ export function httpApi(baseURL: string) {
   });
   instance.interceptors.response.use(undefined, (error) => {
     const responseMsg = error.response?.data?.status_message || error.message;
-    toast.error(responseMsg);
+    console.log(responseMsg);
+
     return Promise.reject(error);
   });
   return instance;
