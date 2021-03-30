@@ -5,6 +5,7 @@ import {
   IWidgetProvider,
   MovieWidgetComponent,
   PeopleWidgetComponent,
+  Languages,
 } from 'movie_widget';
 import 'movie_widget/dist/index.css';
 
@@ -28,19 +29,38 @@ const themes: ITheme = {
   dark: darkTheme,
 };
 
+const options: Languages[] = ['ru', 'en'];
+
 const App = () => {
   const [theme, setTheme] = useState<keyof ITheme>('light');
+  const [language, setLanguage] = useState<Languages>('en');
+
   const handleChange = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(nextTheme);
   };
+
+  const handleChangeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLanguage(e.target.value as Languages);
+  };
+
   return (
-    <WidgetProvider theme={themes[theme]}>
+    <WidgetProvider theme={themes[theme]} language={language}>
       <div className='wrapper'>
         <h1 className='title'>My website title</h1>
-        <button onClick={handleChange} className='btn'>
-          Change Theme
-        </button>
+        <div>
+          <button onClick={handleChange} className='btn'>
+            Change Theme
+          </button>
+          <select value={language} onChange={handleChangeLanguage}>
+            {options.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className='widget-box'>
           <MovieWidgetComponent className='movie-widget' />
           <PeopleWidgetComponent className='actors-widget' />

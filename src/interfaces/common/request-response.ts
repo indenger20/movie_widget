@@ -10,7 +10,8 @@ export interface PaginationWrapper<T = any> extends IPagination {
   results: T[];
 }
 
-export enum WidgetTypes {
-  MOVIE,
-  PEOPLE,
+export interface IListState<T> {
+  list: T;
+  searchQuery: string;
+  hasMore: boolean;
 }

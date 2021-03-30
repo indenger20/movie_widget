@@ -1,0 +1,9 @@
+{
+  "movieTitle": "Поиск Фильмов",
+  "peopleTitle": "Поиск Людей",
+  "searchPlaceholder": "Введите поисковый запрос",
+  "loading": "Загрузка...",
+  "list": {
+    "rating": "Рейтинг"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "movieTitle": "Search Movies",
+  "peopleTitle": "Search Peoples",
+  "searchPlaceholder": "Enter search query",
+  "loading": "loading...",
+  "list": {
+    "rating": "Rating"
+  }
+}

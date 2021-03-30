@@ -1,22 +1,17 @@
 import { MOVIE_API_PATH } from 'config/appConfig';
-import { listWithPaginationInitialState, widgetListPaths } from 'const';
+import { listWithPaginationInitialState } from 'const';
 import { httpApi } from 'helpers';
-import { IMovieList, IPeopleList, QueryParams, WidgetTypes } from 'interfaces';
+import { IMovieList, IPeopleList, QueryParams } from 'interfaces';
 
 const api = httpApi(MOVIE_API_PATH);
-
-const getWidgetApiPath = (type: WidgetTypes, query?: string): string => {
-  return widgetListPaths[type][String(Boolean(query))];
-};
 
 export const getWidgetListActions = async <
   T = IMovieList | IPeopleList
 >(payload: {
-  type: WidgetTypes;
+  path: string;
   params: QueryParams;
 }) => {
-  const { params, type } = payload;
-  const path = getWidgetApiPath(type, params.query);
+  const { params, path } = payload;
 
   try {
     const result = await api.get<T>(path, { params });

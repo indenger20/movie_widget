@@ -1,25 +1,32 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
-import { ITheme } from './interfaces';
+import { ITheme, LanguageTypes } from './interfaces';
+import { ConfigContext } from 'context';
+import { useConfig } from 'hooks';
+
+import './i18n/config';
 
 import 'react-toastify/dist/ReactToastify.css';
 
+export type Languages = LanguageTypes;
+
 export interface IWidgetProvider {
   theme?: ITheme;
+  language?: LanguageTypes;
   children: React.ReactElement;
 }
 
 export interface IWidgetWrapperProps {
-  filter?: number;
+  filter?: string;
   className?: string;
 }
 
 export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
-  const { theme } = props;
+  const { theme, language } = props;
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,13 +38,17 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
         ref.current.style.setProperty(`--widget-${key}`, colors[key]);
       }
     });
-  }, [props.theme]);
+  }, [theme]);
+
+  const { config, setLanguage } = useConfig({ language });
 
   return (
-    <div ref={ref}>
-      {props.children}
-      <ToastContainer />
-    </div>
+    <ConfigContext.Provider value={{ config, setLanguage }}>
+      <div ref={ref}>
+        {props.children}
+        <ToastContainer />
+      </div>
+    </ConfigContext.Provider>
   );
 };
 

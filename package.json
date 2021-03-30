@@ -70,6 +70,8 @@
   ],
   "dependencies": {
     "clsx": "^1.1.1",
+    "i18next": "^20.1.0",
+    "react-i18next": "^11.8.12",
     "react-toastify": "^7.0.3",
     "use-immer": "^0.5.1"
   }
