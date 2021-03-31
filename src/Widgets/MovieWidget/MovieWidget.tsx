@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useCallback, useRef } from 'react';
 import { IListState, IMovie, IMovieList, IPeople } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
-import { getPersentage } from 'helpers';
+import { filterListItem, getPersentage } from 'helpers';
 import { IListWrapperProps } from 'index';
 import { useImmer } from 'use-immer';
 import { useTranslation } from 'react-i18next';
 import { ConfigContext } from 'context';
-import { getWidgetListActions } from 'actions';
+import { getMoviesByPeopleActions, getWidgetListActions } from 'actions';
 import {
   DEFAULT_PAGE,
   listWithPaginationInitialState,
@@ -71,19 +71,25 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
   }) => {
     const newQuery = query !== undefined ? query : searchQuery;
     const params = { language, page, query: newQuery };
+
     let path = Boolean(newQuery)
       ? moviePaths.with_query
       : moviePaths.without_query;
 
+    let dataList = listWithPaginationInitialState();
     if (!resetFilter && filter) {
       path = moviePaths.with_filter;
       params['with_people'] = filter.id;
+      dataList = await getMoviesByPeopleActions({
+        path,
+        params,
+      });
+    } else {
+      dataList = await getWidgetListActions<IMovieList>({
+        path,
+        params,
+      });
     }
-
-    const dataList = await getWidgetListActions<IMovieList>({
-      path,
-      params,
-    });
 
     const hasMore = dataList.total_pages > dataList.page;
     let updatedList = dataList;
@@ -95,7 +101,7 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     }
     setState((draft) => {
       draft.hasMore = hasMore;
-      draft.searchQuery;
+      draft.searchQuery = newQuery;
       draft.list = updatedList;
     });
   };
@@ -123,12 +129,19 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
 
   const handleSearch = useCallback(
     debounce((query: string) => {
-      loadList({ page: DEFAULT_PAGE, query });
+      scrollToTop();
+      if (!filter) {
+        loadList({ page: DEFAULT_PAGE, query });
+        return;
+      }
+      setState((draft) => {
+        draft.searchQuery = query;
+      });
     }, SEARCH_DELAY_TIMER),
     [language, filter?.id],
   );
 
-  const loadMoreData = async () => {
+  const loadMoreData = () => {
     const newPage = page + 1;
     if (newPage > total_pages) {
       setState((draft) => {
@@ -152,20 +165,24 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     ? t('movieTitleWithFilter', { title: filter.name })
     : t('movieTitle');
 
+  const filteredMovie = filter
+    ? results.filter(filterListItem(searchQuery))
+    : results;
+
   return (
     <div className={clsx(styles.widgetWrapper, className)}>
       <span className={styles.widgetTitle}>{title}</span>
-      <Search onChange={handleSearch} disabled={Boolean(filter)} />
+      <Search onChange={handleSearch} />
       <div className={styles.widgetList} ref={scrollRef}>
         <InfiniteScroll
           height={500}
           className={styles.widgetListScroll}
-          dataLength={results.length}
+          dataLength={filteredMovie.length}
           next={loadMoreData}
           hasMore={hasMore}
           loader={<h4>{t('loading')}</h4>}
         >
-          {results.map((movie) => {
+          {filteredMovie.map((movie) => {
             const { title, id, backdrop_path, vote_average } = movie;
             return (
               <InfographicCard

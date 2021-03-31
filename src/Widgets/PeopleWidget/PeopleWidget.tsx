@@ -17,6 +17,7 @@ import { IListWrapperProps } from 'index';
 import clsx from 'clsx';
 
 import styles from '../../widget.module.css';
+import { filterListItem } from 'helpers';
 
 interface IPeopleWidgetState extends IListState<IPeopleList> {}
 
@@ -99,7 +100,7 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     }
     setState((draft) => {
       draft.hasMore = hasMore;
-      draft.searchQuery;
+      draft.searchQuery = newQuery;
       draft.list = updatedList;
     });
   };
@@ -127,7 +128,13 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
 
   const handleSearch = useCallback(
     debounce((query: string) => {
-      loadList({ page: DEFAULT_PAGE, query });
+      if (!filter) {
+        loadList({ page: DEFAULT_PAGE, query });
+        return;
+      }
+      setState((draft) => {
+        draft.searchQuery = query;
+      });
     }, SEARCH_DELAY_TIMER),
     [language, filter?.id],
   );
@@ -156,20 +163,24 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     ? t('peopleTitleWithFilter', { title: filter.title })
     : t('peopleTitle');
 
+  const filteredPeople = filter
+    ? results.filter(filterListItem(searchQuery))
+    : results;
+
   return (
     <div className={clsx(styles.widgetWrapper, className)}>
       <span className={styles.widgetTitle}>{title}</span>
-      <Search onChange={handleSearch} disabled={Boolean(filter)} />
+      <Search onChange={handleSearch} />
       <div className={styles.widgetList} ref={scrollRef}>
         <InfiniteScroll
           height={500}
           className={styles.widgetListScroll}
-          dataLength={results.length}
+          dataLength={filteredPeople.length}
           next={loadMoreData}
           hasMore={hasMore}
           loader={<h4>{t('loading')}</h4>}
         >
-          {results.map((people) => {
+          {filteredPeople.map((people) => {
             const { name, popularity, id, profile_path } = people;
             return (
               <InfographicCard
