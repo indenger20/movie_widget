@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   WidgetProvider,
-  IWidgetProvider,
   MovieWidgetComponent,
   PeopleWidgetComponent,
   Languages,
@@ -12,26 +13,8 @@ import {
 import 'movie_widget/dist/index.css';
 
 import './index.css';
-
-const lightTheme: IWidgetProvider['theme'] = {
-  colors: { primary: 'green', dark: '#eee' },
-};
-
-const darkTheme: IWidgetProvider['theme'] = {
-  colors: { primary: 'green', dark: '#000' },
-};
-
-interface ITheme {
-  light: IWidgetProvider['theme'];
-  dark: IWidgetProvider['theme'];
-}
-
-const themes: ITheme = {
-  light: lightTheme,
-  dark: darkTheme,
-};
-
-const options: Languages[] = ['ru', 'en'];
+import { ITheme, options, themes } from './const';
+import { MOVIE_API_KEY } from './config';
 
 const App = () => {
   const [theme, setTheme] = useState<keyof ITheme>('light');
@@ -48,37 +31,49 @@ const App = () => {
     setLanguage(e.target.value as Languages);
   };
 
-  return (
-    <WidgetProvider theme={themes[theme]} language={language}>
-      <div className='wrapper'>
-        <h1 className='title'>My website title</h1>
-        <div>
-          <button onClick={handleChange} className='btn'>
-            Change Theme
-          </button>
-          <select value={language} onChange={handleChangeLanguage}>
-            {options.map((o) => (
-              <option key={o} value={o}>
-                {o}
-              </option>
-            ))}
-          </select>
-        </div>
+  const handleError = (err: string) => {
+    toast.error(err);
+  };
 
-        <div className='widget-box'>
-          <MovieWidgetComponent
-            className='movie-widget'
-            onClick={selectMovie}
-            filter={selectedPeople}
-          />
-          <PeopleWidgetComponent
-            className='actors-widget'
-            filter={selectedMovie}
-            onClick={selectPeople}
-          />
+  return (
+    <>
+      <WidgetProvider
+        apiKey={MOVIE_API_KEY}
+        theme={themes[theme]}
+        language={language}
+        onError={handleError}
+      >
+        <div className='wrapper'>
+          <h1 className='title'>My website title</h1>
+          <div>
+            <button onClick={handleChange} className='btn'>
+              Change Theme
+            </button>
+            <select value={language} onChange={handleChangeLanguage}>
+              {options.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className='widget-box'>
+            <MovieWidgetComponent
+              className='movie-widget'
+              onSelect={selectMovie}
+              filter={selectedPeople}
+            />
+            <PeopleWidgetComponent
+              className='actors-widget'
+              filter={selectedMovie}
+              onSelect={selectPeople}
+            />
+          </div>
         </div>
-      </div>
-    </WidgetProvider>
+      </WidgetProvider>
+      <ToastContainer />
+    </>
   );
 };
 

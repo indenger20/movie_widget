@@ -1,32 +1,42 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
 import { IMovie, IPeople, ITheme, LanguageTypes } from './interfaces';
-import { ConfigContext } from 'context';
+import { AxiosContext, ConfigContext } from 'context';
 import { useConfig } from 'hooks';
 
 import './i18n/config';
+import { MOVIE_API_PATH } from 'config/appConfig';
+import { httpApi } from 'helpers/app/httpApi';
 
 export type Languages = LanguageTypes;
 export type Movie = IMovie;
 export type People = IPeople;
 
 export interface IWidgetProvider {
+  apiKey: string;
   theme?: ITheme;
   language?: LanguageTypes;
   children: React.ReactElement;
+  onError?(err: string): void;
 }
 
 export interface IListWrapperProps<T, V> {
   filter?: T | null;
-  onClick?(filter: V | null): void;
+  onSelect?(filter: V | null): void;
   className?: string;
 }
 
 export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
-  const { theme, language } = props;
+  const { theme, language, onError, apiKey } = props;
+
+  const api = useMemo(
+    () => httpApi({ apiKey, baseURL: MOVIE_API_PATH, handleError: onError }),
+    [],
+  );
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,9 +53,11 @@ export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
   const { config, setLanguage } = useConfig({ language });
 
   return (
-    <ConfigContext.Provider value={{ config, setLanguage }}>
-      <div ref={ref}>{props.children}</div>
-    </ConfigContext.Provider>
+    <AxiosContext.Provider value={{ axios: api }}>
+      <ConfigContext.Provider value={{ config, setLanguage }}>
+        <div ref={ref}>{props.children}</div>
+      </ConfigContext.Provider>
+    </AxiosContext.Provider>
   );
 };
 

@@ -1,20 +1,14 @@
-import { MOVIE_API_PATH } from 'config/appConfig';
 import { DEFAULT_PAGE, listWithPaginationInitialState } from 'const';
-import { httpApi } from 'helpers';
-import {
-  ICredit,
-  IMovie,
-  IMovieList,
-  IPeopleList,
-  QueryParams,
-} from 'interfaces';
+import { ICredit, IMovieList, IPeopleList, QueryParams } from 'interfaces';
+import { API } from 'hooks';
 
-const api = httpApi(MOVIE_API_PATH);
-
-export const getWidgetListActions = async <T>(payload: {
-  path: string;
-  params: QueryParams;
-}) => {
+export const getWidgetListAction = async <T>(
+  api: API,
+  payload: {
+    path: string;
+    params: QueryParams;
+  },
+) => {
   const { params, path } = payload;
 
   try {
@@ -26,10 +20,13 @@ export const getWidgetListActions = async <T>(payload: {
   }
 };
 
-export const getPeopleByMovieActions = async (payload: {
-  path: string;
-  params: QueryParams;
-}) => {
+export const getPeopleByMovieAction = async (
+  api: API,
+  payload: {
+    path: string;
+    params: QueryParams;
+  },
+) => {
   const { params, path } = payload;
 
   try {
@@ -46,10 +43,13 @@ export const getPeopleByMovieActions = async (payload: {
   }
 };
 
-export const getMoviesByPeopleActions = async (payload: {
-  path: string;
-  params: QueryParams;
-}) => {
+export const getMoviesByPeopleAction = async (
+  api: API,
+  payload: {
+    path: string;
+    params: QueryParams;
+  },
+) => {
   const { params, path } = payload;
 
   try {
