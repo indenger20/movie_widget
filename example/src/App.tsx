@@ -68,13 +68,13 @@ const App = () => {
         <div className='widget-box'>
           <MovieWidgetComponent
             className='movie-widget'
-            onClick={selectMovie}
+            onSelect={selectMovie}
             filter={selectedPeople}
           />
           <PeopleWidgetComponent
             className='actors-widget'
             filter={selectedMovie}
-            onClick={selectPeople}
+            onSelect={selectPeople}
           />
         </div>
       </div>

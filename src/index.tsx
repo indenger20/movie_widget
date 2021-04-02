@@ -21,7 +21,7 @@ export interface IWidgetProvider {
 
 export interface IListWrapperProps<T, V> {
   filter?: T | null;
-  onClick?(filter: V | null): void;
+  onSelect?(filter: V | null): void;
   className?: string;
 }
 
