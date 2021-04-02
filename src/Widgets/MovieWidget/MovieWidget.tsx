@@ -5,10 +5,8 @@ import { filterListItem, getPersentage } from 'helpers';
 import { IListWrapperProps } from 'index';
 import { useImmer } from 'use-immer';
 import { useTranslation } from 'react-i18next';
-
 import { AxiosContext, ConfigContext } from 'context';
 import { getMoviesByPeopleAction, getWidgetListAction } from 'actions';
-
 import { listWithPaginationInitialState } from 'const';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Search from 'components/Search';
@@ -99,6 +97,9 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     loadList,
     onSelect,
   });
+
+
+
 
   const title = filter
     ? t('movieTitleWithFilter', { title: filter.name })

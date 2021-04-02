@@ -57,7 +57,6 @@ const App = () => {
               ))}
             </select>
           </div>
-
           <div className='widget-box'>
             <MovieWidgetComponent
               className='movie-widget'
