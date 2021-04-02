@@ -8,15 +8,14 @@ import { useImmer } from 'use-immer';
 import { AxiosContext, ConfigContext } from 'context';
 import { getPeopleByMovieAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
-import { getPeopleByMovieActions, getWidgetListActions } from 'actions';
-import { IListWrapperProps } from 'index';
 import clsx from 'clsx';
 
 import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
 
 import { filterListItem } from 'helpers';
-
+import { IListWrapperProps } from 'index';
+import Preloader from 'components/Preloader';
 
 interface IPeopleWidgetState extends IListState<IPeopleList> {}
 
@@ -25,6 +24,7 @@ const initialState: IPeopleWidgetState = {
   searchQuery: '',
   hasMore: false,
   selectedId: null,
+  isLoading: false,
 };
 
 const peoplePaths = {
@@ -41,8 +41,6 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
 
   const scrollTop = useScrollTop(scrollRef);
 
-  const scrollTop = useScrollTop(scrollRef);
-
   const {
     config: { language },
   } = useContext(ConfigContext);
@@ -53,7 +51,14 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     searchQuery,
     hasMore,
     selectedId,
+    isLoading,
   } = state;
+
+  const startLoading = () => {
+    setState((draft) => {
+      draft.isLoading = true;
+    });
+  };
 
   const loadList = async ({
     page,
@@ -70,6 +75,8 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
       ? peoplePaths.with_query
       : peoplePaths.without_query;
 
+    startLoading();
+    let isNewList = false;
     let dataList = listWithPaginationInitialState();
     if (!resetFilter && filter) {
       path = peoplePaths.with_filter(filter.id);
@@ -78,6 +85,7 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
         path,
         params,
       });
+      isNewList = true;
     } else {
       dataList = await getWidgetListAction<IPeopleList>(axios, {
         path,
@@ -85,7 +93,7 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
       });
     }
 
-    handleUpdateState(dataList);
+    handleUpdateState(dataList, isNewList);
   };
 
   const {
@@ -115,14 +123,21 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     <div className={clsx(styles.widgetWrapper, className)}>
       <span className={styles.widgetTitle}>{title}</span>
       <Search onChange={handleSearch} />
-      <div className={styles.widgetList} ref={scrollRef}>
+      <div
+        className={clsx(
+          styles.widgetList,
+          isLoading && styles.widgetListLoading,
+        )}
+        ref={scrollRef}
+      >
+        {isLoading && <Preloader />}
         <InfiniteScroll
           height={500}
           className={styles.widgetListScroll}
           dataLength={filteredPeople.length}
           next={loadMoreData}
           hasMore={hasMore}
-          loader={<h4>{t('loading')}</h4>}
+          loader={null}
         >
           {filteredPeople.map((people) => {
             const { name, popularity, id, profile_path } = people;

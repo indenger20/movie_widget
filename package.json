@@ -23,7 +23,10 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1",
+    "typescript": "^3.7.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -41,6 +44,7 @@
     "@typescript-eslint/parser": "^2.26.0",
     "axios": "^0.21.1",
     "babel-eslint": "^10.0.3",
+    "clsx": "^1.1.1",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.7.0",
@@ -53,6 +57,7 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
+    "i18next": "^20.1.0",
     "lodash.debounce": "^4.0.8",
     "lodash.merge": "^4.6.2",
     "microbundle-crl": "^0.13.10",
@@ -60,13 +65,12 @@
     "prettier": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-i18next": "^11.8.12",
     "react-infinite-scroll-component": "^6.0.0",
     "react-scripts": "^3.4.1",
-    "clsx": "^1.1.1",
-    "i18next": "^20.1.0",
-    "react-i18next": "^11.8.12",
-    "use-immer": "^0.5.1",
-    "typescript": "^3.7.5"
+    "react-toastify": "^7.0.3",
+    "typescript": "^3.7.5",
+    "use-immer": "^0.5.1"
   },
   "files": [
     "dist"
