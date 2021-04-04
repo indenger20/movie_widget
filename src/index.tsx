@@ -142,6 +142,16 @@ export class BrowserProvider {
     this.render();
   }
 
+  updateLanguage(language: Languages) {
+    this.props.language = language;
+    this.render();
+  }
+
+  updateTheme(theme: ITheme) {
+    this.props.theme = merge(this.props.theme, theme);
+    this.render();
+  }
+
   render() {
     const { insertId, ...res } = this.props;
     ReactDOM.render(
