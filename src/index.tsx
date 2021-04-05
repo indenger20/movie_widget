@@ -1,22 +1,12 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { v4 as uuid } from 'uuid';
-import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
 import { IMovie, IPeople, ITheme, LanguageTypes } from 'interfaces';
-import { AxiosContext, ConfigContext } from 'context';
-import { useConfig } from 'hooks';
-
-import './i18n/config';
-import { MOVIE_API_PATH } from 'config/appConfig';
-import { httpApi } from 'helpers/app/httpApi';
-import clsx from 'clsx';
 import { createSpesificWidget } from 'helpers';
 import { IProviderConfig, ProviderConfig } from 'helpers/app/providerConfig';
-
-const providerConfig = new ProviderConfig();
 
 export type WidgetTypes = 'movie' | 'people';
 
@@ -24,7 +14,7 @@ export interface IWidgetProvider {
   apiKey: string;
   theme?: ITheme;
   language?: LanguageTypes;
-  children: React.ReactElement;
+  children: (config: IProviderConfig) => React.ReactElement;
   className?: string;
   onError?(err: string): void;
 }
@@ -33,22 +23,21 @@ export interface IListWrapperProps<T, V> {
   filter?: T | null;
   onSelect?(filter: V | null): void;
   className?: string;
+  config: IProviderConfig;
 }
+
+export type IWidgetConfig =
+  | IListWrapperProps<IPeople, IMovie>
+  | IListWrapperProps<IMovie, IPeople>;
 
 export interface ICreateListBrowserWidget {
   type: WidgetTypes;
   insertId: string;
-  config:
-    | IListWrapperProps<IPeople, IMovie>
-    | IListWrapperProps<IMovie, IPeople>;
+  config: IWidgetConfig;
 }
 
 export interface IListBrowserWidget extends ICreateListBrowserWidget {
   id: string; // uuid
-}
-
-export interface IBrowserProvider extends IWidgetProvider {
-  insertId: string;
 }
 
 export type Languages = LanguageTypes;
@@ -56,35 +45,12 @@ export type Movie = IMovie;
 export type People = IPeople;
 
 export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
-  const { theme, language, onError, apiKey } = props;
+  const config = useMemo(() => {
+    const configServise = new ProviderConfig(props);
+    return configServise.getCongig();
+  }, [props]);
 
-  const api = useMemo(
-    () => httpApi({ apiKey, baseURL: MOVIE_API_PATH, handleError: onError }),
-    [],
-  );
-
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const currentTheme = merge(defaultTheme, theme);
-    const { colors = {} } = currentTheme;
-
-    Object.keys(colors).forEach((key) => {
-      if (ref.current) {
-        ref.current.style.setProperty(`--widget-${key}`, colors[key]);
-      }
-    });
-  }, [theme]);
-
-  const { config, setLanguage } = useConfig({ language });
-
-  return (
-    <AxiosContext.Provider value={{ axios: api }}>
-      <ConfigContext.Provider value={{ config, setLanguage }}>
-        <div ref={ref}>{props.children}</div>
-      </ConfigContext.Provider>
-    </AxiosContext.Provider>
-  );
+  return props.children(config);
 };
 
 export const PeopleWidgetComponent = (
@@ -100,29 +66,10 @@ export const MovieWidgetComponent = (
 };
 
 export class BrowserProvider {
-  private configServise = providerConfig;
-  private props: IProviderConfig;
+  private configServise: ProviderConfig;
   private widgets: IListBrowserWidget[] = [];
-  constructor(providerProps: IBrowserProvider) {
-    const updatedConfig = this.configServise.add(providerProps);
-    this.props = {
-      ...updatedConfig,
-    };
-  }
-
-  private renderWidgets() {
-    const widgets = this.widgets;
-    const { className } = this.props;
-    return (
-      <div className={clsx(className)}>
-        {widgets.map((widget, i) => {
-          const component = createSpesificWidget(widget);
-          const widgetElement = React.cloneElement(component, { key: i });
-
-          return widgetElement;
-        })}
-      </div>
-    );
+  constructor(providerProps: IWidgetProvider) {
+    this.configServise = new ProviderConfig(providerProps);
   }
 
   createListWidget(props: ICreateListBrowserWidget) {
@@ -138,7 +85,8 @@ export class BrowserProvider {
     const updatedWidgets = this.widgets.filter((w) => w.id !== id);
     this.widgets = updatedWidgets;
 
-    this.render();
+    const domElement = document.getElementById(id);
+    domElement?.remove();
   }
 
   updateWidget(props: IListBrowserWidget) {
@@ -154,20 +102,33 @@ export class BrowserProvider {
   }
 
   updateLanguage(language: Languages) {
-    this.props.language = language;
+    this.configServise.updateLanguage(language);
     this.render();
   }
 
   updateTheme(theme: ITheme) {
-    this.props.theme = merge(this.props.theme, theme);
+    this.configServise.updateTheme(theme);
     this.render();
   }
 
   render() {
-    const { insertId, ...res } = this.props;
-    ReactDOM.render(
-      <WidgetProvider {...res}>{this.renderWidgets()}</WidgetProvider>,
-      document.getElementById(insertId),
-    );
+    const widgets = this.widgets;
+    const config = this.configServise.getCongig();
+
+    for (let i = 0; i < widgets.length; i += 1) {
+      const widget = widgets[i];
+      const component = createSpesificWidget(widget);
+
+      const widgetElement = React.cloneElement(component, {
+        config,
+      });
+
+      ReactDOM.render(
+        <div id={widget.id} key={widget.id}>
+          {widgetElement}
+        </div>,
+        document.getElementById(widget.insertId),
+      );
+    }
   }
 }

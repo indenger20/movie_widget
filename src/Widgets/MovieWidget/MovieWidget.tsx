@@ -1,10 +1,9 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { IListState, IMovie, IMovieList, IPeople } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
 import { filterListItem, getPersentage } from 'helpers';
 import { useImmer } from 'use-immer';
 import { useTranslation } from 'react-i18next';
-import { AxiosContext, ConfigContext } from 'context';
 import { getMoviesByPeopleAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -14,6 +13,7 @@ import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
 import { IListWrapperProps } from 'index';
 import Preloader from 'components/Preloader';
+import { withConfig } from 'containers';
 
 interface IMovieWidgetState extends IListState<IMovieList> {}
 
@@ -32,15 +32,14 @@ const moviePaths = {
 };
 
 function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
-  const { className, filter, onSelect } = props;
+  const { filter, onSelect, config } = props;
   const [state, setState] = useImmer(initialState);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { axios } = useContext(AxiosContext);
+
   const scrollTop = useScrollTop(scrollRef);
 
-  const {
-    config: { language },
-  } = useContext(ConfigContext);
+  const { api: axios, language } = config;
+
   const { t } = useTranslation();
 
   const {
@@ -108,9 +107,6 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     onSelect,
   });
 
-
-
-
   const title = filter
     ? t('movieTitleWithFilter', { title: filter.name })
     : t('movieTitle');
@@ -120,7 +116,7 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     : results;
 
   return (
-    <div className={clsx(styles.widgetWrapper, className)}>
+    <React.Fragment>
       <span className={styles.widgetTitle}>{title}</span>
       <Search onChange={handleSearch} />
       <div
@@ -155,8 +151,8 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
           })}
         </InfiniteScroll>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
-export default MovieWidget;
+export default withConfig(MovieWidget);

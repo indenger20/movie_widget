@@ -1,11 +1,10 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { IListState, IMovie, IPeople, IPeopleList } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
 import Search from 'components/Search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useTranslation } from 'react-i18next';
 import { useImmer } from 'use-immer';
-import { AxiosContext, ConfigContext } from 'context';
 import { getPeopleByMovieAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
 import clsx from 'clsx';
@@ -16,6 +15,7 @@ import { useListLoad, useScrollTop } from 'hooks';
 import { filterListItem } from 'helpers';
 import { IListWrapperProps } from 'index';
 import Preloader from 'components/Preloader';
+import { withConfig } from 'containers';
 
 interface IPeopleWidgetState extends IListState<IPeopleList> {}
 
@@ -34,16 +34,13 @@ const peoplePaths = {
 };
 
 function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
-  const { className, filter, onSelect } = props;
+  const { filter, onSelect, config } = props;
   const [state, setState] = useImmer(initialState);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { axios } = useContext(AxiosContext);
-
   const scrollTop = useScrollTop(scrollRef);
 
-  const {
-    config: { language },
-  } = useContext(ConfigContext);
+  const { api: axios, language } = config;
+
   const { t } = useTranslation();
 
   const {
@@ -120,7 +117,7 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     : results;
 
   return (
-    <div className={clsx(styles.widgetWrapper, className)}>
+    <React.Fragment>
       <span className={styles.widgetTitle}>{title}</span>
       <Search onChange={handleSearch} />
       <div
@@ -155,8 +152,8 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
           })}
         </InfiniteScroll>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
-export default PeopleWidget;
+export default withConfig(PeopleWidget);

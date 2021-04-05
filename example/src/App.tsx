@@ -43,33 +43,39 @@ const App = () => {
         language={language}
         onError={handleError}
       >
-        <div className='wrapper'>
-          <h1 className='title'>My website title</h1>
-          <div>
-            <button onClick={handleChange} className='btn'>
-              Change Theme
-            </button>
-            <select value={language} onChange={handleChangeLanguage}>
-              {options.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className='widget-box'>
-            <MovieWidgetComponent
-              className='movie-widget'
-              onSelect={selectMovie}
-              filter={selectedPeople}
-            />
-            <PeopleWidgetComponent
-              className='actors-widget'
-              filter={selectedMovie}
-              onSelect={selectPeople}
-            />
-          </div>
-        </div>
+        {(config) => {
+          return (
+            <div className='wrapper'>
+              <h1 className='title'>My website title</h1>
+              <div>
+                <button onClick={handleChange} className='btn'>
+                  Change Theme
+                </button>
+                <select value={language} onChange={handleChangeLanguage}>
+                  {options.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='widget-box'>
+                <MovieWidgetComponent
+                  className='movie-widget'
+                  onSelect={selectMovie}
+                  filter={selectedPeople}
+                  config={config}
+                />
+                <PeopleWidgetComponent
+                  className='actors-widget'
+                  filter={selectedMovie}
+                  onSelect={selectPeople}
+                  config={config}
+                />
+              </div>
+            </div>
+          );
+        }}
       </WidgetProvider>
       <ToastContainer />
     </>

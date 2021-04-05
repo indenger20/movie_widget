@@ -18,7 +18,7 @@ const wrapperState = () => useImmer<StateList | null>(null);
 
 interface IProps {
   state: StateList;
-  language: LanguageTypes;
+  language?: LanguageTypes;
   filter?: IMovie | IPeople | null;
   onSelect?(widget: IMovie | IPeople | null): void;
   loadList(params: {
