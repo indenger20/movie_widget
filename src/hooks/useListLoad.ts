@@ -69,8 +69,6 @@ export const useListLoad = (props: IProps) => {
         loadList({ page: DEFAULT_PAGE, query });
         return;
       }
-
-      // loadList({ page: DEFAULT_PAGE, query });
     }, SEARCH_DELAY_TIMER),
     [language, filter?.id],
   );
@@ -117,13 +115,11 @@ export const useListLoad = (props: IProps) => {
 
   useEffect(() => {
     if (filter) {
-      console.log('state', state);
-
       loadList({ page: DEFAULT_PAGE, query: '' });
       handleSelect(null)();
       scrollToTop();
     }
-  }, [filter]);
+  }, [filter?.id]);
 
   return { handleUpdateState, handleSelect, handleSearch, loadMoreData };
 };

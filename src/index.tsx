@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { v4 as uuid } from 'uuid';
 import { defaultTheme } from 'const';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
@@ -12,6 +13,10 @@ import './i18n/config';
 import { MOVIE_API_PATH } from 'config/appConfig';
 import { httpApi } from 'helpers/app/httpApi';
 import clsx from 'clsx';
+import { createSpesificWidget } from 'helpers';
+import { IProviderConfig, ProviderConfig } from 'helpers/app/providerConfig';
+
+const providerConfig = new ProviderConfig();
 
 export type WidgetTypes = 'movie' | 'people';
 
@@ -32,13 +37,14 @@ export interface IListWrapperProps<T, V> {
 
 export interface ICreateListBrowserWidget {
   type: WidgetTypes;
+  insertId: string;
   config:
     | IListWrapperProps<IPeople, IMovie>
     | IListWrapperProps<IMovie, IPeople>;
 }
 
 export interface IListBrowserWidget extends ICreateListBrowserWidget {
-  id: number; // array index
+  id: string; // uuid
 }
 
 export interface IBrowserProvider extends IWidgetProvider {
@@ -94,29 +100,26 @@ export const MovieWidgetComponent = (
 };
 
 export class BrowserProvider {
-  props: IBrowserProvider;
-  widgets: IListBrowserWidget[] = [];
+  private configServise = providerConfig;
+  private props: IProviderConfig;
+  private widgets: IListBrowserWidget[] = [];
   constructor(providerProps: IBrowserProvider) {
-    this.props = providerProps;
+    const updatedConfig = this.configServise.add(providerProps);
+    this.props = {
+      ...updatedConfig,
+    };
   }
 
-  _renderWidgets() {
+  private renderWidgets() {
     const widgets = this.widgets;
     const { className } = this.props;
     return (
       <div className={clsx(className)}>
         {widgets.map((widget, i) => {
-          const { type, config } = widget;
-          let component = null;
-          if (type === 'movie') {
-            const props = config as IListWrapperProps<IPeople, IMovie>;
-            component = <MovieWidget {...props} />;
-          }
-          if (type === 'people') {
-            const props = config as IListWrapperProps<IMovie, IPeople>;
-            component = <PeopleWidget {...props} />;
-          }
-          return component && React.cloneElement(component, { key: i });
+          const component = createSpesificWidget(widget);
+          const widgetElement = React.cloneElement(component, { key: i });
+
+          return widgetElement;
         })}
       </div>
     );
@@ -125,10 +128,17 @@ export class BrowserProvider {
   createListWidget(props: ICreateListBrowserWidget) {
     const widget: IListBrowserWidget = {
       ...props,
-      id: this.widgets.length,
+      id: uuid(),
     };
     this.widgets.push(widget);
     return widget;
+  }
+
+  removeWidget(id: IListBrowserWidget['id']) {
+    const updatedWidgets = this.widgets.filter((w) => w.id !== id);
+    this.widgets = updatedWidgets;
+
+    this.render();
   }
 
   updateWidget(props: IListBrowserWidget) {
@@ -138,6 +148,7 @@ export class BrowserProvider {
       }
       return w;
     });
+
     this.widgets = updatedWidgets;
     this.render();
   }
@@ -155,7 +166,7 @@ export class BrowserProvider {
   render() {
     const { insertId, ...res } = this.props;
     ReactDOM.render(
-      <WidgetProvider {...res}>{this._renderWidgets()}</WidgetProvider>,
+      <WidgetProvider {...res}>{this.renderWidgets()}</WidgetProvider>,
       document.getElementById(insertId),
     );
   }

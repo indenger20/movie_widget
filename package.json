@@ -40,6 +40,7 @@
     "@types/react-dom": "^16.9.7",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
     "@types/react-window": "^1.8.2",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "axios": "^0.21.1",
@@ -70,7 +71,8 @@
     "react-scripts": "^3.4.1",
     "react-toastify": "^7.0.3",
     "typescript": "^3.7.5",
-    "use-immer": "^0.5.1"
+    "use-immer": "^0.5.1",
+    "uuid": "^8.3.2"
   },
   "files": [
     "dist"
