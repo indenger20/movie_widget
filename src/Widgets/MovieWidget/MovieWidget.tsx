@@ -98,9 +98,6 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     onSelect,
   });
 
-
-
-
   const title = filter
     ? t('movieTitleWithFilter', { title: filter.name })
     : t('movieTitle');

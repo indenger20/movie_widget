@@ -55,7 +55,7 @@ export const getMoviesByPeopleAction = async (
   try {
     const result = await api.get<IMovieList>(path, { params });
     const movies = result.data.results;
-
+    const promises = [];
     for (
       let index = result.data.page + 1;
       index <= result.data.total_pages;
@@ -65,9 +65,17 @@ export const getMoviesByPeopleAction = async (
         ...params,
         page: index,
       };
-      const result = await api.get<IMovieList>(path, { params: updatedParams });
-      movies.push(...result.data.results);
+      promises.push(
+        api.get<IMovieList>(path, { params: updatedParams }),
+      );
     }
+
+    const values = await Promise.all(promises);
+    const otherResults = values
+      .sort((a, b) => a.data.page - b.data.page)
+      .flatMap((v) => v.data.results);
+
+    movies.push(...otherResults);
 
     const list: IMovieList = {
       results: movies,

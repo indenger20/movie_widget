@@ -8,7 +8,6 @@ import { useImmer } from 'use-immer';
 import { AxiosContext, ConfigContext } from 'context';
 import { getPeopleByMovieAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
-import { getPeopleByMovieActions, getWidgetListActions } from 'actions';
 import { IListWrapperProps } from 'index';
 import clsx from 'clsx';
 
@@ -16,7 +15,6 @@ import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
 
 import { filterListItem } from 'helpers';
-
 
 interface IPeopleWidgetState extends IListState<IPeopleList> {}
 
@@ -38,8 +36,6 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
   const [state, setState] = useImmer(initialState);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { axios } = useContext(AxiosContext);
-
-  const scrollTop = useScrollTop(scrollRef);
 
   const scrollTop = useScrollTop(scrollRef);
 
