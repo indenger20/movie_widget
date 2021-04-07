@@ -21,7 +21,7 @@
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "react-scripts": "file:../node_modules/react-scripts",
-    "react-toastify": "^7.0.3",
+    "react-toastify": "file:../node_modules/react-toastify",
     "typescript": "file:../node_modules/typescript"
   },
   "devDependencies": {

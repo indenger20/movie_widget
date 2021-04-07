@@ -1,20 +1,21 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { IListState, IMovie, IPeople, IPeopleList } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
 import Search from 'components/Search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useTranslation } from 'react-i18next';
 import { useImmer } from 'use-immer';
-import { AxiosContext, ConfigContext } from 'context';
 import { getPeopleByMovieAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
-import { IListWrapperProps } from 'index';
 import clsx from 'clsx';
 
 import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
 
 import { filterListItem } from 'helpers';
+import { IListWrapperProps } from 'index';
+import Preloader from 'components/Preloader';
+import { withConfig } from 'containers';
 
 interface IPeopleWidgetState extends IListState<IPeopleList> {}
 
@@ -23,6 +24,7 @@ const initialState: IPeopleWidgetState = {
   searchQuery: '',
   hasMore: false,
   selectedId: null,
+  isLoading: false,
 };
 
 const peoplePaths = {
@@ -32,16 +34,13 @@ const peoplePaths = {
 };
 
 function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
-  const { className, filter, onSelect } = props;
+  const { filter, onSelect, config } = props;
   const [state, setState] = useImmer(initialState);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { axios } = useContext(AxiosContext);
-
   const scrollTop = useScrollTop(scrollRef);
 
-  const {
-    config: { language },
-  } = useContext(ConfigContext);
+  const { api: axios, language } = config;
+
   const { t } = useTranslation();
 
   const {
@@ -49,7 +48,14 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     searchQuery,
     hasMore,
     selectedId,
+    isLoading,
   } = state;
+
+  const startLoading = () => {
+    setState((draft) => {
+      draft.isLoading = true;
+    });
+  };
 
   const loadList = async ({
     page,
@@ -66,6 +72,8 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
       ? peoplePaths.with_query
       : peoplePaths.without_query;
 
+    startLoading();
+    let isNewList = false;
     let dataList = listWithPaginationInitialState();
     if (!resetFilter && filter) {
       path = peoplePaths.with_filter(filter.id);
@@ -74,6 +82,7 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
         path,
         params,
       });
+      isNewList = true;
     } else {
       dataList = await getWidgetListAction<IPeopleList>(axios, {
         path,
@@ -81,7 +90,7 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
       });
     }
 
-    handleUpdateState(dataList);
+    handleUpdateState(dataList, isNewList);
   };
 
   const {
@@ -108,17 +117,24 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     : results;
 
   return (
-    <div className={clsx(styles.widgetWrapper, className)}>
+    <React.Fragment>
       <span className={styles.widgetTitle}>{title}</span>
       <Search onChange={handleSearch} />
-      <div className={styles.widgetList} ref={scrollRef}>
+      <div
+        className={clsx(
+          styles.widgetList,
+          isLoading && styles.widgetListLoading,
+        )}
+        ref={scrollRef}
+      >
+        {isLoading && <Preloader />}
         <InfiniteScroll
           height={500}
           className={styles.widgetListScroll}
           dataLength={filteredPeople.length}
           next={loadMoreData}
           hasMore={hasMore}
-          loader={<h4>{t('loading')}</h4>}
+          loader={null}
         >
           {filteredPeople.map((people) => {
             const { name, popularity, id, profile_path } = people;
@@ -136,8 +152,8 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
           })}
         </InfiniteScroll>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
-export default PeopleWidget;
+export default withConfig(PeopleWidget);
