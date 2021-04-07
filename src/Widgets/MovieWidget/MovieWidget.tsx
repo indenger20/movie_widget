@@ -1,19 +1,19 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { IListState, IMovie, IMovieList, IPeople } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
-import { getPersentage } from 'helpers';
-import { IListWrapperProps } from 'index';
+import { filterListItem, getPersentage } from 'helpers';
 import { useImmer } from 'use-immer';
 import { useTranslation } from 'react-i18next';
-import { ConfigContext } from 'context';
-import { getWidgetListActions } from 'actions';
+import { getMoviesByPeopleAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Search from 'components/Search';
 import clsx from 'clsx';
-
 import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
+import { IListWrapperProps } from 'index';
+import Preloader from 'components/Preloader';
+import { withConfig } from 'containers';
 
 interface IMovieWidgetState extends IListState<IMovieList> {}
 
@@ -22,6 +22,7 @@ const initialState: IMovieWidgetState = {
   searchQuery: '',
   hasMore: false,
   selectedId: null,
+  isLoading: false,
 };
 
 const moviePaths = {
@@ -31,14 +32,14 @@ const moviePaths = {
 };
 
 function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
-  const { className, filter, onSelect } = props;
+  const { filter, onSelect, config } = props;
   const [state, setState] = useImmer(initialState);
   const scrollRef = useRef<HTMLDivElement>(null);
+
   const scrollTop = useScrollTop(scrollRef);
 
-  const {
-    config: { language },
-  } = useContext(ConfigContext);
+  const { api: axios, language } = config;
+
   const { t } = useTranslation();
 
   const {
@@ -46,7 +47,14 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     searchQuery,
     hasMore,
     selectedId,
+    isLoading,
   } = state;
+
+  const startLoading = () => {
+    setState((draft) => {
+      draft.isLoading = true;
+    });
+  };
 
   const loadList = async ({
     page,
@@ -59,20 +67,29 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
   }) => {
     const newQuery = query !== undefined ? query : searchQuery;
     const params = { language, page, query: newQuery };
+
     let path = Boolean(newQuery)
       ? moviePaths.with_query
       : moviePaths.without_query;
-
+    startLoading();
+    let dataList = listWithPaginationInitialState();
+    let isNewList = false;
     if (!resetFilter && filter) {
       path = moviePaths.with_filter;
       params['with_people'] = filter.id;
+      dataList = await getMoviesByPeopleAction(axios, {
+        path,
+        params,
+      });
+      isNewList = true;
+    } else {
+      dataList = await getWidgetListAction<IMovieList>(axios, {
+        path,
+        params,
+      });
     }
 
-    const dataList = await getWidgetListActions<IMovieList>({
-      path,
-      params,
-    });
-    handleUpdateState(dataList);
+    handleUpdateState(dataList, isNewList);
   };
 
   const {
@@ -94,20 +111,31 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
     ? t('movieTitleWithFilter', { title: filter.name })
     : t('movieTitle');
 
+  const filteredMovie = filter
+    ? results.filter(filterListItem(searchQuery))
+    : results;
+
   return (
-    <div className={clsx(styles.widgetWrapper, className)}>
+    <React.Fragment>
       <span className={styles.widgetTitle}>{title}</span>
-      <Search onChange={handleSearch} disabled={Boolean(filter)} />
-      <div className={styles.widgetList} ref={scrollRef}>
+      <Search onChange={handleSearch} />
+      <div
+        className={clsx(
+          styles.widgetList,
+          isLoading && styles.widgetListLoading,
+        )}
+        ref={scrollRef}
+      >
+        {isLoading && <Preloader />}
         <InfiniteScroll
           height={500}
           className={styles.widgetListScroll}
-          dataLength={results.length}
+          dataLength={filteredMovie.length}
           next={loadMoreData}
           hasMore={hasMore}
-          loader={<h4>{t('loading')}</h4>}
+          loader={null}
         >
-          {results.map((movie) => {
+          {filteredMovie.map((movie) => {
             const { title, id, backdrop_path, vote_average } = movie;
             return (
               <InfographicCard
@@ -123,8 +151,8 @@ function MovieWidget(props: IListWrapperProps<IPeople, IMovie>) {
           })}
         </InfiniteScroll>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
-export default MovieWidget;
+export default withConfig(MovieWidget);

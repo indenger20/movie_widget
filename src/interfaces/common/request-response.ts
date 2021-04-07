@@ -15,4 +15,5 @@ export interface IListState<T> {
   searchQuery: string;
   hasMore: boolean;
   selectedId: number | null;
+  isLoading: boolean;
 }

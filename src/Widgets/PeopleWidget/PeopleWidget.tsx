@@ -1,18 +1,21 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { IListState, IMovie, IPeople, IPeopleList } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
 import Search from 'components/Search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useTranslation } from 'react-i18next';
 import { useImmer } from 'use-immer';
+import { getPeopleByMovieAction, getWidgetListAction } from 'actions';
 import { listWithPaginationInitialState } from 'const';
-import { ConfigContext } from 'context';
-import { getPeopleByMovieActions, getWidgetListActions } from 'actions';
-import { IListWrapperProps } from 'index';
 import clsx from 'clsx';
 
 import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
+
+import { filterListItem } from 'helpers';
+import { IListWrapperProps } from 'index';
+import Preloader from 'components/Preloader';
+import { withConfig } from 'containers';
 
 interface IPeopleWidgetState extends IListState<IPeopleList> {}
 
@@ -21,6 +24,7 @@ const initialState: IPeopleWidgetState = {
   searchQuery: '',
   hasMore: false,
   selectedId: null,
+  isLoading: false,
 };
 
 const peoplePaths = {
@@ -30,15 +34,13 @@ const peoplePaths = {
 };
 
 function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
-  const { className, filter, onSelect } = props;
+  const { filter, onSelect, config } = props;
   const [state, setState] = useImmer(initialState);
   const scrollRef = useRef<HTMLDivElement>(null);
-
   const scrollTop = useScrollTop(scrollRef);
 
-  const {
-    config: { language },
-  } = useContext(ConfigContext);
+  const { api: axios, language } = config;
+
   const { t } = useTranslation();
 
   const {
@@ -46,7 +48,14 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     searchQuery,
     hasMore,
     selectedId,
+    isLoading,
   } = state;
+
+  const startLoading = () => {
+    setState((draft) => {
+      draft.isLoading = true;
+    });
+  };
 
   const loadList = async ({
     page,
@@ -63,22 +72,25 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
       ? peoplePaths.with_query
       : peoplePaths.without_query;
 
+    startLoading();
+    let isNewList = false;
     let dataList = listWithPaginationInitialState();
     if (!resetFilter && filter) {
       path = peoplePaths.with_filter(filter.id);
       params['append_to_response'] = 'credits';
-      dataList = await getPeopleByMovieActions({
+      dataList = await getPeopleByMovieAction(axios, {
         path,
         params,
       });
+      isNewList = true;
     } else {
-      dataList = await getWidgetListActions<IPeopleList>({
+      dataList = await getWidgetListAction<IPeopleList>(axios, {
         path,
         params,
       });
     }
 
-    handleUpdateState(dataList);
+    handleUpdateState(dataList, isNewList);
   };
 
   const {
@@ -100,20 +112,31 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
     ? t('peopleTitleWithFilter', { title: filter.title })
     : t('peopleTitle');
 
+  const filteredPeople = filter
+    ? results.filter(filterListItem(searchQuery))
+    : results;
+
   return (
-    <div className={clsx(styles.widgetWrapper, className)}>
+    <React.Fragment>
       <span className={styles.widgetTitle}>{title}</span>
-      <Search onChange={handleSearch} disabled={Boolean(filter)} />
-      <div className={styles.widgetList} ref={scrollRef}>
+      <Search onChange={handleSearch} />
+      <div
+        className={clsx(
+          styles.widgetList,
+          isLoading && styles.widgetListLoading,
+        )}
+        ref={scrollRef}
+      >
+        {isLoading && <Preloader />}
         <InfiniteScroll
           height={500}
           className={styles.widgetListScroll}
-          dataLength={results.length}
+          dataLength={filteredPeople.length}
           next={loadMoreData}
           hasMore={hasMore}
-          loader={<h4>{t('loading')}</h4>}
+          loader={null}
         >
-          {results.map((people) => {
+          {filteredPeople.map((people) => {
             const { name, popularity, id, profile_path } = people;
             return (
               <InfographicCard
@@ -129,8 +152,8 @@ function PeopleWidget(props: IListWrapperProps<IMovie, IPeople>) {
           })}
         </InfiniteScroll>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
-export default PeopleWidget;
+export default withConfig(PeopleWidget);

@@ -18,7 +18,7 @@ const wrapperState = () => useImmer<StateList | null>(null);
 
 interface IProps {
   state: StateList;
-  language: LanguageTypes;
+  language?: LanguageTypes;
   filter?: IMovie | IPeople | null;
   onSelect?(widget: IMovie | IPeople | null): void;
   loadList(params: {
@@ -34,8 +34,8 @@ export const useListLoad = (props: IProps) => {
   const {
     state,
     state: {
-      selectedId,
-      list: { results, total_pages, page },
+      list: { total_pages, page },
+      searchQuery,
     },
     language,
     filter,
@@ -60,18 +60,30 @@ export const useListLoad = (props: IProps) => {
 
   const handleSearch = useCallback(
     debounce((query: string) => {
-      loadList({ page: DEFAULT_PAGE, query });
+      scrollToTop();
+      setState((draft) => {
+        if (!draft) return;
+        draft.searchQuery = query;
+      });
+      if (!filter) {
+        loadList({ page: DEFAULT_PAGE, query });
+        return;
+      }
     }, SEARCH_DELAY_TIMER),
     [language, filter?.id],
   );
 
-  const handleUpdateState = (dataList: PaginationWrapper<any>) => {
+  const handleUpdateState = (
+    dataList: PaginationWrapper<any>,
+    isNewList: boolean,
+  ) => {
     const hasMore = dataList.total_pages > dataList.page;
     let updatedList = dataList;
     if (updatedList.page > DEFAULT_PAGE) {
+      const prevResults = isNewList ? [] : state.list.results;
       updatedList = {
         ...dataList,
-        results: [...state.list.results, ...dataList.results],
+        results: [...prevResults, ...dataList.results],
       };
     }
     setState((draft) => {
@@ -79,6 +91,7 @@ export const useListLoad = (props: IProps) => {
       draft.hasMore = hasMore;
       draft.searchQuery;
       draft.list = updatedList;
+      draft.isLoading = false;
     });
   };
 
@@ -96,24 +109,17 @@ export const useListLoad = (props: IProps) => {
 
   useEffect(() => {
     loadList({ page: DEFAULT_PAGE, query: '', resetFilter: true });
+    handleSelect(null)(); // reset filters
     scrollToTop();
   }, [language]);
 
   useEffect(() => {
-    if (filter?.id) {
+    if (filter) {
       loadList({ page: DEFAULT_PAGE, query: '' });
+      handleSelect(null)();
       scrollToTop();
     }
   }, [filter?.id]);
-
-  useEffect(() => {
-    if (!selectedId) return;
-    const selectedIndex = results.findIndex(
-      (r: IPeople | IMovie) => r.id === selectedId,
-    );
-    if (selectedIndex === -1) return;
-    handleSelect(null)();
-  }, [results]);
 
   return { handleUpdateState, handleSelect, handleSearch, loadMoreData };
 };
