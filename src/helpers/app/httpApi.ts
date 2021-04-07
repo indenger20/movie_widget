@@ -1,18 +1,26 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import { MOVIE_API_KEY } from 'config/appConfig';
 
-export function httpApi(baseURL: string) {
+export function httpApi({
+  apiKey,
+  baseURL,
+  handleError,
+}: {
+  apiKey: string;
+  baseURL: string;
+  handleError?(err: string): void;
+}) {
   const instance = axios.create({
     baseURL,
   });
   instance.interceptors.request.use((config) => {
-    config.params['api_key'] = MOVIE_API_KEY;
+    config.params['api_key'] = apiKey;
     return config;
   });
   instance.interceptors.response.use(undefined, (error) => {
     const responseMsg = error.response?.data?.status_message || error.message;
-    toast.error(responseMsg);
+    if (handleError) {
+      handleError(responseMsg);
+    }
     return Promise.reject(error);
   });
   return instance;

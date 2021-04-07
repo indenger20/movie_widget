@@ -3,21 +3,29 @@ import React, { useEffect } from 'react';
 import styles from './search.module.css';
 import { useImmer } from 'use-immer';
 import { usePrevious } from 'hooks';
+import { useTranslation } from 'react-i18next';
+import { LanguageTypes } from 'interfaces';
 
 interface ISearchProps {
+  disabled?: boolean;
   onChange(query: string): void;
 }
 
 function Search(props: ISearchProps) {
   const [query, setQuery] = useImmer('');
-  const { onChange } = props;
+  const { onChange, disabled } = props;
   const prevQuery = usePrevious(query);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (prevQuery !== query) {
       onChange(query);
     }
   }, [query]);
+
+  useEffect(() => {
+    setQuery('');
+  }, [onChange]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -26,10 +34,11 @@ function Search(props: ISearchProps) {
   return (
     <form className={styles.search}>
       <TextInput
+        disabled={disabled}
         name='search'
         onChange={handleChange}
         value={query}
-        placeholder='Enter search query'
+        placeholder={t('searchPlaceholder')}
       />
     </form>
   );

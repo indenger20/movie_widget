@@ -1,7 +1,7 @@
-import { ExampleComponent } from '.'
+import { MovieWidgetComponent } from '.';
 
 describe('ExampleComponent', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
-  })
-})
+    expect(MovieWidgetComponent).toBeTruthy();
+  });
+});

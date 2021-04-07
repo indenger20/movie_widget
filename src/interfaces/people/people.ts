@@ -5,9 +5,14 @@ export interface IPeople {
   profile_path: string;
   adult: boolean;
   id: number;
-  known_for: IMovie[];
   name: string;
   popularity: number;
+}
+
+export interface ICredit {
+  credits: {
+    cast: IPeople[];
+  };
 }
 
 export interface IPeopleList extends PaginationWrapper<IPeople> {}
