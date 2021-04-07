@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   IListState,
   IMovie,
@@ -8,13 +8,15 @@ import {
   LanguageTypes,
   PaginationWrapper,
 } from 'interfaces';
-import { useImmer } from 'use-immer';
+import { Draft } from 'immer';
 import { DEFAULT_PAGE, SEARCH_DELAY_TIMER } from 'const';
 import debounce from 'lodash.debounce';
 
 type List = IPeopleList | IMovieList;
 type StateList = IListState<List>;
-const wrapperState = () => useImmer<StateList | null>(null);
+type SetState = (
+  f: ((draft: Draft<StateList> | StateList) => void) | StateList,
+) => void;
 
 interface IProps {
   state: StateList;
@@ -27,7 +29,7 @@ interface IProps {
     resetFilter?: boolean;
   }): void;
   scrollTop(position: number): void;
-  setState: ReturnType<typeof wrapperState>[1];
+  setState: SetState;
 }
 
 export const useListLoad = (props: IProps) => {
@@ -35,7 +37,6 @@ export const useListLoad = (props: IProps) => {
     state,
     state: {
       list: { total_pages, page },
-      searchQuery,
     },
     language,
     filter,
