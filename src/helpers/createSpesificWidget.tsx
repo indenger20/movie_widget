@@ -1,9 +1,10 @@
 import {
   ICreateListBrowserWidget,
   IListWrapperProps,
+  IMovie,
+  IPeople,
   WidgetTypes,
 } from 'index';
-import { IMovie, IPeople } from 'interfaces';
 import React from 'react';
 import MovieWidget from 'Widgets/MovieWidget';
 import PeopleWidget from 'Widgets/PeopleWidget';

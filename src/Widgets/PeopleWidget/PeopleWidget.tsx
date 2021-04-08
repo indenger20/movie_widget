@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { IListState, IMovie, IPeople, IPeopleList } from 'interfaces';
+import { IListState, IPeopleList } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
 import Search from 'components/Search';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -13,7 +13,7 @@ import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
 
 import { filterListItem } from 'helpers';
-import { IListWrapperProps } from 'index';
+import { IListWrapperProps, IMovie, IPeople } from 'index';
 import Preloader from 'components/Preloader';
 import { withConfig } from 'containers';
 

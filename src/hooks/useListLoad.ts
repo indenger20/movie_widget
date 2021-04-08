@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   IListState,
-  IMovie,
   IMovieList,
-  IPeople,
   IPeopleList,
-  LanguageTypes,
   PaginationWrapper,
 } from 'interfaces';
 import { Draft } from 'immer';
 import { DEFAULT_PAGE, SEARCH_DELAY_TIMER } from 'const';
 import debounce from 'lodash.debounce';
+import { IMovie, IPeople, LanguageTypes } from 'index';
 
 type List = IPeopleList | IMovieList;
 type StateList = IListState<List>;
