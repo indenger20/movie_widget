@@ -14,7 +14,7 @@ export interface IWidgetProvider {
   apiKey: string;
   theme?: ITheme;
   language?: LanguageTypes;
-  children: (config: IProviderConfig) => React.ReactElement;
+  children?: (config: IProviderConfig) => React.ReactElement;
   className?: string;
   onError?(err: string): void;
 }
@@ -45,6 +45,8 @@ export type Movie = IMovie;
 export type People = IPeople;
 
 export const WidgetProvider: React.FC<IWidgetProvider> = (props) => {
+  if (!props.children) return null;
+
   const config = useMemo(() => {
     const configServise = new ProviderConfig(props);
     return configServise.getCongig();
