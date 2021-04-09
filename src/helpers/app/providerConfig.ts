@@ -1,18 +1,8 @@
-import { AxiosInstance } from 'axios';
-import { i18n } from 'i18next';
 import { MOVIE_API_PATH } from 'config/appConfig';
 import { defaultTheme } from 'const';
 import { createLocalization } from 'i18n/config';
-import { IWidgetProvider } from 'index';
-import { ITheme, LanguageTypes } from 'interfaces';
+import { IProviderConfig, ITheme, IWidgetProvider, LanguageTypes } from 'index';
 import { httpApi } from './httpApi';
-
-export type IProviderConfig = {
-  theme: ITheme;
-  language: LanguageTypes;
-  api: AxiosInstance;
-  i18n: i18n;
-};
 
 export class ProviderConfig {
   private config: IProviderConfig;

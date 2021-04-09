@@ -1,12 +1,14 @@
 {
   "name": "movie_widget",
-  "version": "1.0.1",
+  "version": "1.0.9",
   "description": "Movie Widget",
   "author": "",
   "license": "MIT",
   "repository": "https://github.com/indenger20/movie_widget.git",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
+  "source": "src/index.tsx",
+  "typings": "src/index.tsx",
   "engines": {
     "node": ">=10"
   },
@@ -59,8 +61,12 @@
     "typescript": "^3.7.5"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
+  "resolutions": {
+    "immer": "7.0.9"
+  },
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
@@ -69,6 +75,7 @@
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "i18next": "^20.1.0",
+    "immer": "^9.0.1",
     "lodash.debounce": "^4.0.8",
     "lodash.merge": "^4.6.2",
     "react": "^16.13.1",

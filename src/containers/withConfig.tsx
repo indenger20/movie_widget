@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import { IProviderConfig } from 'helpers/app/providerConfig';
-import { IWidgetConfig } from 'index';
+import { IProviderConfig, IWidgetConfig } from 'index';
 
 import React, { useEffect, useRef } from 'react';
 import { I18nextProvider } from 'react-i18next';
