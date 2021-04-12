@@ -1,4 +1,4 @@
-import { IMovie, IPeople } from 'interfaces';
+import { IMovie, IPeople } from 'index';
 
 export const filterListItem = (query: string) => (
   item: IMovie | IPeople,

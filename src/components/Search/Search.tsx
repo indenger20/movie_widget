@@ -4,7 +4,6 @@ import styles from './search.module.css';
 import { useImmer } from 'use-immer';
 import { usePrevious } from 'hooks';
 import { useTranslation } from 'react-i18next';
-import { LanguageTypes } from 'interfaces';
 
 interface ISearchProps {
   disabled?: boolean;

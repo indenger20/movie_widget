@@ -4,11 +4,55 @@ import { v4 as uuid } from 'uuid';
 import merge from 'lodash.merge';
 import PeopleWidget from 'Widgets/PeopleWidget';
 import MovieWidget from 'Widgets/MovieWidget';
-import { IMovie, IPeople, ITheme, LanguageTypes } from 'interfaces';
 import { createSpesificWidget } from 'helpers';
-import { IProviderConfig, ProviderConfig } from 'helpers/app/providerConfig';
+import { ProviderConfig } from 'helpers/app/providerConfig';
+import { AxiosInstance } from 'axios';
+import { i18n } from 'i18next';
 
 export type WidgetTypes = 'movie' | 'people';
+export type LanguageTypes = 'en' | 'ru';
+
+export interface ITheme {
+  colors?: {
+    primary?: string;
+    secondary?: string;
+    success?: string;
+    light?: string;
+    dark?: string;
+  };
+}
+
+export interface IMovie {
+  poster_path: string | null;
+  adult: boolean;
+  overview: string;
+  release_date: string;
+  genre_ids: number[];
+  id: number;
+  original_title: string;
+  original_language: LanguageTypes;
+  title: string;
+  backdrop_path: string | null;
+  popularity: number;
+  vote_count: number;
+  video: boolean;
+  vote_average: number;
+}
+
+export interface IPeople {
+  profile_path: string;
+  adult: boolean;
+  id: number;
+  name: string;
+  popularity: number;
+}
+
+export type IProviderConfig = {
+  theme: ITheme;
+  language: LanguageTypes;
+  api: AxiosInstance;
+  i18n: i18n;
+};
 
 export interface IWidgetProvider {
   apiKey: string;

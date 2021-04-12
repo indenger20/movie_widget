@@ -6,9 +6,9 @@ import {
   WidgetProvider,
   MovieWidgetComponent,
   PeopleWidgetComponent,
-  Languages,
-  Movie,
-  People,
+  LanguageTypes,
+  IMovie,
+  IPeople,
 } from 'movie_widget';
 import 'movie_widget/dist/index.css';
 
@@ -18,9 +18,9 @@ import { MOVIE_API_KEY } from './config';
 
 const App = () => {
   const [theme, setTheme] = useState<keyof ITheme>('light');
-  const [language, setLanguage] = useState<Languages>('en');
-  const [selectedMovie, selectMovie] = useState<Movie | null>(null);
-  const [selectedPeople, selectPeople] = useState<People | null>(null);
+  const [language, setLanguage] = useState<LanguageTypes>('en');
+  const [selectedMovie, selectMovie] = useState<IMovie | null>(null);
+  const [selectedPeople, selectPeople] = useState<IPeople | null>(null);
 
   const handleChange = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
@@ -28,7 +28,7 @@ const App = () => {
   };
 
   const handleChangeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value as Languages);
+    setLanguage(e.target.value as LanguageTypes);
   };
 
   const handleError = (err: string) => {

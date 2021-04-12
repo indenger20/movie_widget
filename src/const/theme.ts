@@ -1,4 +1,4 @@
-import { ITheme } from 'interfaces';
+import { ITheme } from 'index';
 
 export const defaultTheme: ITheme = {
   colors: {

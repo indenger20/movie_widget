@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { IListState, IMovie, IMovieList, IPeople } from 'interfaces';
+import { IListState, IMovieList } from 'interfaces';
 import InfographicCard from 'components/InfographicCard';
 import { filterListItem, getPersentage } from 'helpers';
 import { useImmer } from 'use-immer';
@@ -11,7 +11,7 @@ import Search from 'components/Search';
 import clsx from 'clsx';
 import styles from '../../widget.module.css';
 import { useListLoad, useScrollTop } from 'hooks';
-import { IListWrapperProps } from 'index';
+import { IListWrapperProps, IMovie, IPeople } from 'index';
 import Preloader from 'components/Preloader';
 import { withConfig } from 'containers';
 
