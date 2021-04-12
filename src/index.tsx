@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react';
-import ReactDOM from 'react-dom';
-import { v4 as uuid } from 'uuid';
-import merge from 'lodash.merge';
-import PeopleWidget from 'Widgets/PeopleWidget';
-import MovieWidget from 'Widgets/MovieWidget';
-import { createSpesificWidget } from 'helpers';
-import { ProviderConfig } from 'helpers/app/providerConfig';
+
 import { AxiosInstance } from 'axios';
+import MovieWidget from 'Widgets/MovieWidget';
+import PeopleWidget from 'Widgets/PeopleWidget';
+import { ProviderConfig } from 'helpers/app/providerConfig';
+import ReactDOM from 'react-dom';
+import { createSpesificWidget } from 'helpers';
 import { i18n } from 'i18next';
+import merge from 'lodash.merge';
+import { v4 as uuid } from 'uuid';
 
 export type WidgetTypes = 'movie' | 'people';
 export type LanguageTypes = 'en' | 'ru';

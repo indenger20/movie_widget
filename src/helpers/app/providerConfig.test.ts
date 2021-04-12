@@ -1,6 +1,6 @@
-import { defaultTheme } from 'const';
 import { ITheme } from 'index';
 import { ProviderConfig } from './providerConfig';
+import { defaultTheme } from 'const';
 
 describe('ProviderConfig', () => {
   let configService: ProviderConfig;
@@ -9,7 +9,7 @@ describe('ProviderConfig', () => {
     configService = new ProviderConfig({ apiKey: '123', language: 'en' });
   });
 
-  test('Language is changed', () => {
+  test('Should change language', () => {
     const config = configService.getCongig();
 
     configService.updateLanguage('ru');
@@ -19,7 +19,7 @@ describe('ProviderConfig', () => {
     );
   });
 
-  test('Theme is changed', () => {
+  test('Should change theme', () => {
     const updatedColors: ITheme['colors'] = {
       dark: 'green',
       secondary: 'red',

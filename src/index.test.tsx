@@ -1,7 +1,8 @@
+import { IPeople, MovieWidgetComponent } from './index';
+
+import { ProviderConfig } from 'helpers/app/providerConfig';
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ProviderConfig } from 'helpers/app/providerConfig';
-import { IPeople, MovieWidgetComponent } from './index';
 
 describe('Widgets', () => {
   let configService: ProviderConfig;
